@@ -10,5 +10,14 @@ module.exports = {
     title: "LeetCoder",
     description: "A website for leetcode problems and solutions",
   },
-  plugins: [],
+  plugins: [
+    {
+      resolve: "gatsby-source-filesystem",
+      options: {
+        name: `problems`,
+        path: `${__dirname}/problems`,
+      },
+    },
+    "gatsby-plugin-mdx",
+  ],
 };
