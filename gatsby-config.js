@@ -6,5 +6,9 @@
 
 module.exports = {
   /* Your site config here */
+  siteMetadata: {
+    title: "LeetCoder",
+    description: "A website for leetcode problems and solutions",
+  },
   plugins: [],
 };
