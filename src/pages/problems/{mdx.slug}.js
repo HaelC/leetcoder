@@ -4,11 +4,25 @@ import { MDXRenderer } from "gatsby-plugin-mdx";
 import Layout from "../../components/layout";
 
 const ProblemPage = ({ data }) => {
+  const { title, difficulty, link, number } = data.mdx.frontmatter;
   return (
-    <Layout pageTitle={data.mdx.frontmatter.title}>
-      <h2>
-        {data.mdx.frontmatter.number}. {data.mdx.frontmatter.title}
+    <Layout pageTitle={title}>
+      <h2 className="problem-title">
+        {number}. {title}
       </h2>
+      <div className="problem-info">
+        <span className={`difficulty ${difficulty}`}>
+          {difficulty.toUpperCase()}
+        </span>
+        <a
+          href={link}
+          className="leetcode-link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          LeetCode Link
+        </a>
+      </div>
       <MDXRenderer>{data.mdx.body}</MDXRenderer>
     </Layout>
   );

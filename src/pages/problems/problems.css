@@ -1,0 +1,26 @@
+.difficulty {
+  margin-right: 1rem;
+  padding: 4px;
+  font-size: 75%;
+  border-radius: 5px;
+}
+
+.easy {
+  color: green;
+  border: 1px solid green;
+}
+
+.medium {
+  color: orange;
+  border: 1px solid orange;
+}
+
+.hard {
+  color: red;
+  border: 1px solid red;
+}
+
+.leetcode-link {
+  color: grey;
+  font-size: 85%;
+}
