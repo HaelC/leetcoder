@@ -12,12 +12,24 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: "gatsby-source-filesystem",
+      resolve: `gatsby-source-filesystem`,
       options: {
         name: `problems`,
         path: `${__dirname}/problems`,
       },
     },
-    "gatsby-plugin-mdx",
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-prismjs`,
+            options: {
+              aliases: { js: "javascript" },
+            },
+          },
+        ],
+      },
+    },
   ],
 };
