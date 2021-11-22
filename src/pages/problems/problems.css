@@ -54,3 +54,15 @@
 .related-problems a {
   color: lightskyblue;
 }
+
+pre[class^="language-"] {
+  display: none;
+}
+
+.language-cpp .language-cpp {
+  display: block;
+}
+
+.language-java .language-java {
+  display: block;
+}
