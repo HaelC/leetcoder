@@ -26,9 +26,17 @@ module.exports = {
             resolve: `gatsby-remark-prismjs`,
             options: {
               aliases: { js: "javascript" },
+              noInlineHighlight: true,
+            },
+          },
+          {
+            resolve: `gatsby-remark-katex`,
+            options: {
+              strict: `ignore`,
             },
           },
         ],
+        remarkPlugins: [require("remark-math")],
       },
     },
   ],
