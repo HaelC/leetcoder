@@ -6,7 +6,7 @@ import "./problems.css";
 const ProblemsPage = ({ data }) => {
   return (
     <Layout pageTitle="Problems">
-      <ul>
+      <ul className="problem-list">
         {data.allMdx.nodes.map(node => (
           <li key={node.id}>
             <Link to={`/problems/${node.slug}`}>

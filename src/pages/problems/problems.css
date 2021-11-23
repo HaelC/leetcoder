@@ -41,6 +41,7 @@
   background-color: lightgray;
   color: gray;
   border-radius: 3px;
+  line-height: 2;
 }
 
 .related-problems {
@@ -65,4 +66,9 @@ pre[class^="language-"] {
 
 .language-java .language-java {
   display: block;
+}
+
+.problem-list a {
+  color: black;
+  text-decoration: none;
 }
