@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { graphql, Link, useStaticQuery } from "gatsby";
 import "./layout.css";
 
-const Layout = ({ pageTitle, children }) => {
+const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
     query {
       site {
@@ -16,9 +16,6 @@ const Layout = ({ pageTitle, children }) => {
 
   return (
     <div className="container">
-      <title>
-        {pageTitle} | {data.site.siteMetadata.title}
-      </title>
       <header className="site-title">{data.site.siteMetadata.title}</header>
       <nav>
         <ul className="nav-links">
@@ -40,7 +37,6 @@ const Layout = ({ pageTitle, children }) => {
 };
 
 Layout.propTypes = {
-  pageTitle: PropTypes.string,
   children: PropTypes.node.isRequired,
 };
 

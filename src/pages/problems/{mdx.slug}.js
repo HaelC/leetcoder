@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { graphql, Link } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import Layout from "../../components/layout";
+import Seo from "../../components/seo";
 
 const RelatedProblems = ({ related_problems }) => {
   if (related_problems.length === 0) {
@@ -28,7 +29,8 @@ const ProblemPage = ({ data }) => {
   const [language, setLanguage] = useState("cpp");
 
   return (
-    <Layout pageTitle={title}>
+    <Layout>
+      <Seo title={title} />
       <div className="problem-info">
         <h2 className="problem-title">
           {number}. {title}

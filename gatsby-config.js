@@ -9,6 +9,7 @@ module.exports = {
   siteMetadata: {
     title: "LeetCoder",
     description: "A website for leetcode problems and solutions",
+    author: "Hael",
   },
   plugins: [
     {
