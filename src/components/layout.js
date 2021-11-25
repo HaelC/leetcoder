@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 import { graphql, Link, useStaticQuery } from "gatsby";
 import "./layout.css";
 
@@ -36,6 +37,11 @@ const Layout = ({ pageTitle, children }) => {
       <main>{children}</main>
     </div>
   );
+};
+
+Layout.propTypes = {
+  pageTitle: PropTypes.string,
+  children: PropTypes.node.isRequired,
 };
 
 export default Layout;

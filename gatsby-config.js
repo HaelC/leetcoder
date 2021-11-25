@@ -12,13 +12,6 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `problems`,
-        path: `${__dirname}/problems`,
-      },
-    },
-    {
       resolve: `gatsby-plugin-mdx`,
       options: {
         gatsbyRemarkPlugins: [
@@ -37,6 +30,14 @@ module.exports = {
           },
         ],
         remarkPlugins: [require("remark-math")],
+      },
+    },
+    `gatsby-plugin-react-helmet`,
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `problems`,
+        path: `${__dirname}/problems`,
       },
     },
   ],
