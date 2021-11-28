@@ -32,6 +32,10 @@ const Layout = ({ children }) => {
         </ul>
       </nav>
       <main>{children}</main>
+      <footer>
+        © {new Date().getFullYear()} &nbsp;
+        <Link to="/about">About LeetCoder</Link>
+      </footer>
     </div>
   );
 };

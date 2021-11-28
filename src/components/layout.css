@@ -28,3 +28,19 @@
   font-weight: 700;
   margin: 3rem 0;
 }
+
+main {
+  min-height: 85vh;
+}
+
+footer {
+  font-size: 14px;
+  width: 100%;
+  color: #999;
+  display: flex;
+  justify-content: center;
+}
+
+footer a {
+  color: #666;
+}
