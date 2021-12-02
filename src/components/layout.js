@@ -25,8 +25,8 @@ const Layout = ({ children }) => {
             </Link>
           </li>
           <li className="nav-link-item">
-            <Link to="/problems" className="nav-link-text">
-              Problems
+            <Link to="/solutions" className="nav-link-text">
+              Solutions
             </Link>
           </li>
         </ul>

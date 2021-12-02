@@ -68,7 +68,7 @@ pre[class^="language-"] {
   display: block;
 }
 
-.problem-list a {
+.solution-list a {
   color: black;
   text-decoration: none;
   line-height: 1.8;

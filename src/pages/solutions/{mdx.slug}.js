@@ -22,7 +22,7 @@ const RelatedProblems = ({ related_problems }) => {
   );
 };
 
-const ProblemPage = ({ data }) => {
+const SolutionPage = ({ data }) => {
   const { title, difficulties, link, number, related_problems, topics } =
     data.mdx.frontmatter;
 
@@ -91,4 +91,4 @@ export const query = graphql`
   }
 `;
 
-export default ProblemPage;
+export default SolutionPage;
