@@ -23,7 +23,7 @@ const RelatedProblems = ({ related_problems }) => {
 };
 
 const ProblemPage = ({ data }) => {
-  const { title, difficulty, link, number, related_problems, topics } =
+  const { title, difficulties, link, number, related_problems, topics } =
     data.mdx.frontmatter;
 
   const [language, setLanguage] = useState("cpp");
@@ -35,9 +35,11 @@ const ProblemPage = ({ data }) => {
         <h2 className="problem-title">
           {number}. {title}
         </h2>
-        <span className={`difficulty ${difficulty}`}>
-          {difficulty.toUpperCase()}
-        </span>
+        {difficulties.map(difficulty => (
+          <span className={`difficulty ${difficulty}`} key={difficulty}>
+            {difficulty.toUpperCase()}
+          </span>
+        ))}
         <a
           href={link}
           className="leetcode-link"
@@ -78,7 +80,7 @@ export const query = graphql`
     mdx(id: { eq: $id }) {
       frontmatter {
         title
-        difficulty
+        difficulties
         link
         number
         related_problems

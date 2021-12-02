@@ -71,4 +71,5 @@ pre[class^="language-"] {
 .problem-list a {
   color: black;
   text-decoration: none;
+  line-height: 1.8;
 }
