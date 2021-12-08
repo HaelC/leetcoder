@@ -14,7 +14,7 @@ const RelatedProblems = ({ related_problems }) => {
       <ul>
         {related_problems.map(problem => (
           <li key={problem}>
-            <Link to={`/problems/${problem[1]}`}>{problem[0]}</Link>
+            <Link to={`/solutions/${problem[1]}`}>{problem[0]}</Link>
           </li>
         ))}
       </ul>
