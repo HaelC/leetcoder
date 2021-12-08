@@ -26,7 +26,7 @@ const SolutionPage = ({ data }) => {
   const { title, difficulties, link, number, related_problems, topics } =
     data.mdx.frontmatter;
 
-  const [language, setLanguage] = useState("cpp");
+  const [language, setLanguage] = useState("none");
 
   return (
     <Layout>
@@ -62,6 +62,7 @@ const SolutionPage = ({ data }) => {
           name="language-choice"
           onChange={e => setLanguage(e.target.value)}
         >
+          <option value="none">Hide code</option>
           <option value="cpp">C++</option>
           <option value="java">Java</option>
         </select>

@@ -60,6 +60,19 @@ pre[class^="language-"] {
   display: none;
 }
 
+div[class^="language-"] p {
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+div[class^="language-"] li {
+  line-height: 1.6;
+}
+
+div[class^="language-"] a {
+  color: gray;
+}
+
 .language-cpp .language-cpp {
   display: block;
 }
