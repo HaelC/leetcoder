@@ -37,9 +37,20 @@ public:
 ```
 
 ```java
-public static void main() {
-    System.out.println("Hello, World");
-    return 0;
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[] {i, j};
+                }
+            }
+        }
+
+        return null;
+    }
 }
 ```
 
@@ -80,6 +91,26 @@ public:
 };
 ```
 
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        Map<Integer, Integer> hashmap = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            if (hashmap.containsKey(target - num)) {
+                return new int[] {hashmap.get(target - num), i};
+            }
+            hashmap.put(num, i);
+        }
+
+
+        return null;
+    }
+}
+```
+
 **Analysis:**
 
 - **Time Complexity**: $O(n)$. The `for` loop will iterate `n` elements, and the operations on hashmap takes constant time. So the total time complexity is $O(n)$.
@@ -91,19 +122,22 @@ The third solution provides a complete new idea to solve this problem. This solu
 
 Two pointers (`p1` and `p2`) will point to two different numbers (`num1` and `num2`). At first, `p1` points to the first element, which is the smallest number; and `p2` points to the last element which is the largest. If `num1 + num2 == target`, then we find two numbers whose sum equals `target`; if `num1 + num2 < target`, then we can move `p1` to the right so that `num1` will be a bit larger; if `num1 + num2 > target`, then move `p2` to the left to make `num2` smaller. Repeat the process until we find the two numbers.
 
+This problem asks us to return the indices, so we need to be careful when sorting the array. We can create a new array to store both the number and its index with the `pair` data structure. Instead of sorting the original array, we can sort the new array based on the pair's first value.
+
 ```cpp
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
         int n = nums.size();
-        vector<pair<int, int>> sortedWithIndex;
 
+        // create sorted array
+        vector<pair<int, int>> sortedWithIndex;
         for (int i = 0; i < n; i++) {
             sortedWithIndex.push_back({nums[i], i});
         }
-
         sort(sortedWithIndex.begin(), sortedWithIndex.end());
 
+        // two pointers
         int p1 = 0, p2 = n - 1;
         while (p1 < p2) {
             int num1 = sortedWithIndex[p1].first, num2 = sortedWithIndex[p2].first;
@@ -121,6 +155,38 @@ public:
         return {-1, -1};
     }
 };
+```
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+
+        // create sorted array
+        List<Pair<Integer, Integer>> sortedWithIndex = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            sortedWithIndex.add(new Pair<>(nums[i], i));
+        }
+        Collections.sort(sortedWithIndex, Comparator.comparing(Pair::getKey));
+
+        // two pointers
+        int p1 = 0, p2 = n - 1;
+        while (p1 < p2) {
+            int num1 = sortedWithIndex.get(p1).getKey(), num2 = sortedWithIndex.get(p2).getKey();
+            if (num1 + num2 == target) {
+                return new int[] {sortedWithIndex.get(p1).getValue(), sortedWithIndex.get(p2).getValue()};
+            }
+            else if (num1 + num2 < target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+
+        return null;
+    }
+}
 ```
 
 **Analysis:**
