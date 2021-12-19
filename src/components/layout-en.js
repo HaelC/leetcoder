@@ -20,12 +20,12 @@ const Layout = ({ children }) => {
       <nav>
         <ul className="nav-links">
           <li className="nav-link-item">
-            <Link to="/" className="nav-link-text">
+            <Link to="/en" className="nav-link-text">
               Home
             </Link>
           </li>
           <li className="nav-link-item">
-            <Link to="/solutions" className="nav-link-text">
+            <Link to="/en/solutions" className="nav-link-text">
               Solutions
             </Link>
           </li>
@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
       <main>{children}</main>
       <footer>
         © {new Date().getFullYear()} &nbsp;
-        <Link to="/about">About LeetCoder</Link>
+        <Link to="/en/about">About LeetCoder</Link>
       </footer>
     </div>
   );

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { graphql, Link } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
-import Layout from "../../components/layout";
-import Seo from "../../components/seo";
+import Layout from "../components/layout-en";
+import Seo from "../components/seo";
 
 const RelatedProblems = ({ related_problems }) => {
   if (related_problems.length === 0) {

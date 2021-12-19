@@ -1,8 +1,8 @@
 import * as React from "react";
 import { graphql, Link } from "gatsby";
-import Layout from "../../components/layout";
+import Layout from "../../../components/layout-en";
 import "./solutions.css";
-import Seo from "../../components/seo";
+import Seo from "../../../components/seo";
 
 const SolutionsPage = ({ data }) => {
   return (
@@ -11,7 +11,7 @@ const SolutionsPage = ({ data }) => {
       <ul className="solution-list">
         {data.allMdx.nodes.map(node => (
           <li key={node.id}>
-            <Link to={`/solutions/${node.slug}`}>
+            <Link to={`/${node.slug}`}>
               {node.frontmatter.number}. {node.frontmatter.title}
             </Link>
           </li>
