@@ -1,0 +1,195 @@
+---
+number: 1
+title: 两数之和
+link: https://leetcode-cn.com/problems/two-sum/
+difficulties: [简单]
+topics: [数组, 哈希表, 排序, 双指针]
+related_problems: [[两数之和, two-sum]]
+---
+
+两数之和 is the first problem on LeetCode, and it is the most famous and classic one. It is an easy problem, but it has many different solutions and various follow-ups. Now let's take a look at how to solve this problem.
+
+### Solution 1: Brute Force
+
+The first solution is straight-forward. The problem asks us to find two numbers whose sum equals the target value. Then we can use a nested `for` loop (with two indices, `i` and `j`) to find those two numbers.
+
+Since we cannot use the same element twice, we iterate variable `i` from `0` to `n`, where `n` is the size of the given array; and iterate `j` from `i + 1` to `n`, so that two indices `i` and `j` will not be the same. If two numbers at indices `i` and `j` add up to target, then we find the result and we can return `{i, j}`.
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int n = nums.size();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (nums[i] + nums[j] == target) {
+                    // we can use curly braces {} to represent vector
+                    return {i, j};
+                }
+            }
+        }
+
+        // return impossible values if there are no two numbers adding up to target
+        return {-1, -1};
+    }
+};
+```
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[] {i, j};
+                }
+            }
+        }
+
+        return null;
+    }
+}
+```
+
+**Analysis:**
+
+- **Time complexity**: $O(n^2)$. The nested `for` loop takes $O(n^2)$ time complexity.  
+  Detailed calculation: let's think about the worst case when we run the complete loops, and see how many steps it will take:
+  - At the first iteration, `i = 0`, and `j` will iterate from `1` to `n - 1`, which takes `n - 1` steps.
+  - At the second iteration, `i = 1`, and then `j` will iterate from `2` to `n - 1`, which takes `n - 2` steps.
+  - ...
+  - At the final iteration, `i = n - 1`, and then `j` will start at `n` and inner loop will take `0` step.
+  - The total computation will take $(n-1) + (n-2) + ... + 1 + 0=\frac{n*(n-1)}{2}$ steps, thus the time complexity will be $O(n^2)$.
+- **Space complexity**: $O(1)$. We don't declare any variables and don't need any additional space.
+
+### Solution 2: Hash Table
+
+The nested `for` loop in solution 1 takes a lot of time. Can we reduce the time complexity? Sure we can. We can make use of the data structure Hash Table to store the numbers that we have met. In this problem we are asked to return the _indices_, so we need to store the numbers together with indices, we can use hashmap to solve the problem. (If we were asked to return two numbers, then we can use a hashset instead.)
+
+When iterating the array, we get each `num` in the array. We first check whether the hash table contains `target - num`. If so, it means that we have found two numbers (`target - num` and `num`) adding up to `target`, and we can immediately return the result. Otherwise, we store the `num` with its index in the hashmap for future reference.
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> hashmap;
+
+        for (int i = 0; i < nums.size(); i++) {
+            int num = nums[i];
+            if (hashmap.count(target - num) > 0) {
+                return {hashmap[target - num], i};
+            }
+
+            hashmap[num] = i;
+        }
+
+        return {-1, -1};
+    }
+};
+```
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        Map<Integer, Integer> hashmap = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            if (hashmap.containsKey(target - num)) {
+                return new int[] {hashmap.get(target - num), i};
+            }
+            hashmap.put(num, i);
+        }
+
+
+        return null;
+    }
+}
+```
+
+**Analysis:**
+
+- **Time Complexity**: $O(n)$. The `for` loop will iterate `n` elements, and the operations on hashmap takes constant time. So the total time complexity is $O(n)$.
+- **Space Complexity**: $O(n)$. The hashmap needs space for `n` elements.
+
+### Solution 3: Sorting and Two Pointers
+
+The third solution provides a complete new idea to solve this problem. This solution uses two techniques: sorting and two pointers. If we applies sorting first, we will get a sorted array. Then we can use two pointers to find two numbers. (In [Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/), we can directly use two pointers.)
+
+Two pointers (`p1` and `p2`) will point to two different numbers (`num1` and `num2`). At first, `p1` points to the first element, which is the smallest number; and `p2` points to the last element which is the largest. If `num1 + num2 == target`, then we find two numbers whose sum equals `target`; if `num1 + num2 < target`, then we can move `p1` to the right so that `num1` will be a bit larger; if `num1 + num2 > target`, then move `p2` to the left to make `num2` smaller. Repeat the process until we find the two numbers.
+
+This problem asks us to return the indices, so we need to be careful when sorting the array. We can create a new array to store both the number and its index with the `pair` data structure. Instead of sorting the original array, we can sort the new array based on the pair's first value.
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int n = nums.size();
+
+        // create sorted array
+        vector<pair<int, int>> sortedWithIndex;
+        for (int i = 0; i < n; i++) {
+            sortedWithIndex.push_back({nums[i], i});
+        }
+        sort(sortedWithIndex.begin(), sortedWithIndex.end());
+
+        // two pointers
+        int p1 = 0, p2 = n - 1;
+        while (p1 < p2) {
+            int num1 = sortedWithIndex[p1].first, num2 = sortedWithIndex[p2].first;
+            if (num1 + num2 == target) {
+                return {sortedWithIndex[p1].second, sortedWithIndex[p2].second};
+            }
+            else if (num1 + num2 < target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+
+        return {-1, -1};
+    }
+};
+```
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+
+        // create sorted array
+        List<Pair<Integer, Integer>> sortedWithIndex = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            sortedWithIndex.add(new Pair<>(nums[i], i));
+        }
+        Collections.sort(sortedWithIndex, Comparator.comparing(Pair::getKey));
+
+        // two pointers
+        int p1 = 0, p2 = n - 1;
+        while (p1 < p2) {
+            int num1 = sortedWithIndex.get(p1).getKey(), num2 = sortedWithIndex.get(p2).getKey();
+            if (num1 + num2 == target) {
+                return new int[] {sortedWithIndex.get(p1).getValue(), sortedWithIndex.get(p2).getValue()};
+            }
+            else if (num1 + num2 < target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+
+        return null;
+    }
+}
+```
+
+**Analysis:**
+
+- **Time Complexity**: $O(n\text{log}(n))$. The time complexity of sorting the array is $O(n\text{log}(n))$, and the time complexity of the two pointers is $O(n)$. Therefore, the total time complexity is $O(n\text{log}(n))$.
+- **Space Complexity**: $O(n)$. We need an additional array with size `n`.

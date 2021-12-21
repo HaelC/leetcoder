@@ -19,13 +19,13 @@ const Layout = ({ children }) => {
       <nav>
         <ul className="nav-links">
           <li className="nav-link-item">
-            <Link to="/en" className="nav-link-text">
-              Home
+            <Link to="/zh" className="nav-link-text">
+              首页
             </Link>
           </li>
           <li className="nav-link-item">
-            <Link to="/en/solutions" className="nav-link-text">
-              Solutions
+            <Link to="/zh/solutions" className="nav-link-text">
+              题解
             </Link>
           </li>
         </ul>
@@ -33,7 +33,7 @@ const Layout = ({ children }) => {
       <main>{children}</main>
       <footer>
         © {new Date().getFullYear()} &nbsp;
-        <Link to="/en/about">About LeetCoder</Link>
+        <Link to="/zh/about">关于 LeetCoder</Link>
       </footer>
     </div>
   );

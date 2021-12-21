@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { graphql, Link } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
-import Layout from "../components/layout-en";
+import Layout from "../components/layout-zh";
 import Seo from "../components/seo";
 
 const RelatedProblems = ({ related_problems }) => {
@@ -10,11 +10,11 @@ const RelatedProblems = ({ related_problems }) => {
   }
   return (
     <div className="related-problems">
-      <h4>Related Problems:</h4>
+      <h4>相关问题：</h4>
       <ul>
         {related_problems.map(problem => (
           <li key={problem}>
-            <Link to={`/en/solution/${problem[1]}`}>{problem[0]}</Link>
+            <Link to={`/zh/solution/${problem[1]}`}>{problem[0]}</Link>
           </li>
         ))}
       </ul>
@@ -28,16 +28,24 @@ const SolutionPage = ({ data }) => {
 
   const [language, setLanguage] = useState("none");
 
+  const zhToEn = {
+    简单: "easy",
+    中等: "medium",
+    困难: "difficult",
+  };
+
+  console.log(zhToEn);
+
   return (
     <Layout>
-      <Seo title={title} />
+      <Seo lang="zh-CN" title={title} />
       <div className="problem-info">
         <h2 className="problem-title">
           {number}. {title}
         </h2>
         {difficulties.map(difficulty => (
-          <span className={`difficulty ${difficulty}`} key={difficulty}>
-            {difficulty.toUpperCase()}
+          <span className={`difficulty ${zhToEn[difficulty]}`} key={difficulty}>
+            {difficulty}
           </span>
         ))}
         <a
@@ -46,7 +54,7 @@ const SolutionPage = ({ data }) => {
           target="_blank"
           rel="noreferrer"
         >
-          LeetCode Link
+          LeetCode 链接
         </a>
         <ul className="problem-topics">
           Topics:
