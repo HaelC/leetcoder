@@ -1,12 +1,12 @@
 import React from "react";
-import Layout from "../components/layout";
-import Seo from "../components/seo";
+import Layout from "../../components/layout-zh";
+import Seo from "../../components/seo";
 
 export default function About() {
   return (
     <Layout>
-      <Seo title="About" description="About LeetCoder" />
-      <h2>About LeetCoder</h2>
+      <Seo lang="zh-CN" title="About" description="About LeetCoder" />
+      <h2>关于 LeetCoder</h2>
       <p>
         LeetCoder is a website which includes solutions for LeetCode problems.
         As a personal website, LeetCoder is not affiliated with LeetCode. All

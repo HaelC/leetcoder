@@ -29,6 +29,10 @@
   margin: 3rem 0;
 }
 
+header {
+  display: flex;
+}
+
 main {
   min-height: 85vh;
 }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import { graphql, Link, useStaticQuery } from "gatsby";
-import "./layout.css";
+import SelectLanguage from "./selectLanguage-en";
 
 const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
@@ -16,16 +16,19 @@ const Layout = ({ children }) => {
 
   return (
     <div className="container">
-      <header className="site-title">{data.site.siteMetadata.title}</header>
+      <header>
+        <span className="site-title">{data.site.siteMetadata.title}</span>
+        <SelectLanguage />
+      </header>
       <nav>
         <ul className="nav-links">
           <li className="nav-link-item">
-            <Link to="/" className="nav-link-text">
+            <Link to="/en" className="nav-link-text">
               Home
             </Link>
           </li>
           <li className="nav-link-item">
-            <Link to="/solutions" className="nav-link-text">
+            <Link to="/en/solutions" className="nav-link-text">
               Solutions
             </Link>
           </li>
@@ -34,7 +37,7 @@ const Layout = ({ children }) => {
       <main>{children}</main>
       <footer>
         © {new Date().getFullYear()} &nbsp;
-        <Link to="/about">About LeetCoder</Link>
+        <Link to="/en/about">About LeetCoder</Link>
       </footer>
     </div>
   );

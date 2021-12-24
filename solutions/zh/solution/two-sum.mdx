@@ -1,0 +1,195 @@
+---
+number: 1
+title: 两数之和
+link: https://leetcode-cn.com/problems/two-sum/
+difficulties: [简单]
+topics: [数组, 哈希表, 排序, 双指针]
+related_problems: [[两数之和, two-sum1]]
+---
+
+两数之和是力扣 LeetCode 上的第一道题，也是力扣上最经典最出名的题目之一。这是一道简单题，不过有着许多不同的解法和后续提问，很多公司也喜欢将两数之和作为面试题目。就让我们来看下这道题有哪些解法吧。
+
+### 解法一：暴力枚举
+
+第一种解法最直接。题目要我们找到和为目标值的两个数，那我们就可以用一个嵌套的`for`循环（使用两个下标`i`和`j`）来找出那两个数。
+
+因为同一个元素无法使用两次，所以为了避免`i`和`j`重复，我们将变量`i`从`0`到`n`进行遍历，将`j`从`i + 1`到`n`进行遍历，其中`n`为给定数组的大小。如果在坐标`i`和`j`的两个数相加等于目标数`target`，那么我们就找到了想要的结果，便可以返回`{i, j}`。
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int n = nums.size();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (nums[i] + nums[j] == target) {
+                    // we can use curly braces {} to represent vector
+                    return {i, j};
+                }
+            }
+        }
+
+        // return impossible values if there are no two numbers adding up to target
+        return {-1, -1};
+    }
+};
+```
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[] {i, j};
+                }
+            }
+        }
+
+        return null;
+    }
+}
+```
+
+**分析:**
+
+- **时间复杂度**: $O(n^2)$。 嵌套的 `for` 循环需要 $O(n^2)$ 的时间复杂度。  
+  在计算时间复杂度时，我们需要考虑最坏的情况，即当循环完整地跑完，总共需要多少步：
+  - 在第一次循环时，`i = 0`，`j`会从`1`开始，遍历到`n - 1`，总共有`n - 1`步
+  - 在第二次循环时，`i = 1`，`j`会从`2`开始，遍历到`n - 1`，总共有`n - 2`步
+  - ......
+  - 在最后一次循环时，`i = n - 1`，`j`会从`n`开始，内层循环不会执行，总共`0`步
+  - 整个计算过程需要 $(n-1) + (n-2) + ... + 1 + 0=\frac{n*(n-1)}{2}$ 步，保留最高次项，并舍去常数项，时间复杂度为 $O(n^2)$
+- **空间复杂度**: $O(1)$。 除了定义三个整形变量`n, i, j`外，我们没有使用额外的空间。
+
+### 解法二：哈希表
+
+解法一中嵌套的`for`会花费大量的时间。我们能否降低时间复杂度？当然可以。我们可以使用哈希表这一数据结构，来记录我们见过的数字。这个问题要求我们返回*下标*，所以我们需要使用哈希图来记录数字以及对应的下标。（如果题目要求返回数字的话，我们则可以使用哈希集。）
+
+在遍历数组时，我们依次得到数组中的每一个数`num`。我们首先检查哈希表中是否存在`target - num`。若存在，则意味着我们找到了两个数(`target - num`与`num`)，其相加之和等于`target`，于是我们便可以返回对应的结果。若不存在，那么我们就在哈希图中记录`num`以及对应的下标，以供之后查找。
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> hashmap;
+
+        for (int i = 0; i < nums.size(); i++) {
+            int num = nums[i];
+            if (hashmap.count(target - num) > 0) {
+                return {hashmap[target - num], i};
+            }
+
+            hashmap[num] = i;
+        }
+
+        return {-1, -1};
+    }
+};
+```
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        Map<Integer, Integer> hashmap = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            if (hashmap.containsKey(target - num)) {
+                return new int[] {hashmap.get(target - num), i};
+            }
+            hashmap.put(num, i);
+        }
+
+
+        return null;
+    }
+}
+```
+
+**分析:**
+
+- **时间复杂度**: $O(n)$。 `for` 循环会遍历数组的`n`个元素，而对哈希图的操作（查找、插入）都只需要常数级时间，所以总的时间复杂度为 $O(n)$。
+- **空间复杂度**: $O(n)$。 哈希图需要额外的空间来储存 `n`个元素。
+
+### 解法三：排序及双指针
+
+第三种解法换了一种全新的思维。该解法用到了两种方法：排序以及双指针。我们首先对数组进行排序，便可以得到一个有序数组。之后我们可以使用双指针来找到这两个数。（在[两数之和 II-输入有序数组](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/)问题中，我们可以直接使用双指针的方法。）
+
+两个指针（`p1`和`p2`）分别指向两个不同的数（`num1`和`num2`）。一开始，`p1`指向数组第一个元素即最小的数，而`p2`指向最后一个元素即最大的数。如果`num1 + num2 == target`，那么我们找到了两个数；如果`num1 + num2 < target`，那么`num1`偏小了，我们可以将`p1`指针右移，使`num1`增大一点；如果`num1 + num2 > target`，那么可以将`p2`左移，使`num2`变小一点。重复该过程，直到我们找到两个数之和等于目标数。
+
+问题要求返回的是下标，所以我们在对数组排序时需稍加注意。我们可以新建一个数组，用数据结构“数对”`pair`来储存数字和其下标。我们无需对原始数组进行排序，而是根据数对的第一个值，对新数组进行排序。
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int n = nums.size();
+
+        // create sorted array
+        vector<pair<int, int>> sortedWithIndex;
+        for (int i = 0; i < n; i++) {
+            sortedWithIndex.push_back({nums[i], i});
+        }
+        sort(sortedWithIndex.begin(), sortedWithIndex.end());
+
+        // two pointers
+        int p1 = 0, p2 = n - 1;
+        while (p1 < p2) {
+            int num1 = sortedWithIndex[p1].first, num2 = sortedWithIndex[p2].first;
+            if (num1 + num2 == target) {
+                return {sortedWithIndex[p1].second, sortedWithIndex[p2].second};
+            }
+            else if (num1 + num2 < target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+
+        return {-1, -1};
+    }
+};
+```
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+
+        // create sorted array
+        List<Pair<Integer, Integer>> sortedWithIndex = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            sortedWithIndex.add(new Pair<>(nums[i], i));
+        }
+        Collections.sort(sortedWithIndex, Comparator.comparing(Pair::getKey));
+
+        // two pointers
+        int p1 = 0, p2 = n - 1;
+        while (p1 < p2) {
+            int num1 = sortedWithIndex.get(p1).getKey(), num2 = sortedWithIndex.get(p2).getKey();
+            if (num1 + num2 == target) {
+                return new int[] {sortedWithIndex.get(p1).getValue(), sortedWithIndex.get(p2).getValue()};
+            }
+            else if (num1 + num2 < target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+
+        return null;
+    }
+}
+```
+
+**分析:**
+
+- **时间复杂度**: $O(n\text{log}(n))$。 对数组排序的时间复杂度为 $O(n\text{log}(n))$，双指针的时间复杂度为 $O(n)$。因此总的时间复杂度为 $O(n\text{log}(n))$.
+- **空间复杂度**: $O(n)$。 我们需要额外创建一个大小为`n`的数组。
