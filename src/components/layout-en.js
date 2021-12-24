@@ -1,6 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import { graphql, Link, useStaticQuery } from "gatsby";
+import SelectLanguage from "./selectLanguage-en";
 
 const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
@@ -15,7 +16,10 @@ const Layout = ({ children }) => {
 
   return (
     <div className="container">
-      <header className="site-title">{data.site.siteMetadata.title}</header>
+      <header>
+        <span className="site-title">{data.site.siteMetadata.title}</span>
+        <SelectLanguage />
+      </header>
       <nav>
         <ul className="nav-links">
           <li className="nav-link-item">

@@ -1,0 +1,17 @@
+.select-language {
+  margin-left: auto;
+  padding: 2rem 2rem 0 0;
+}
+
+.select-language li {
+  list-style: none;
+  line-height: 1.5rem;
+}
+
+.select-language a {
+  color: black;
+}
+
+.current-language {
+  font-weight: bold;
+}
