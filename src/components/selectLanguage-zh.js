@@ -2,7 +2,8 @@ import { Link } from "gatsby";
 import React from "react";
 
 function SelectLanguage() {
-  const suffixPath = window.location.pathname.substring(3);
+  const isBrowser = typeof window !== "undefined";
+  const suffixPath = isBrowser ? window.location.pathname.substring(3) : "/";
 
   return (
     <ul className="select-language">
