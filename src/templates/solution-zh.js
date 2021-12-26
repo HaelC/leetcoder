@@ -34,7 +34,7 @@ const SolutionPage = ({ data }) => {
 
   return (
     <Layout>
-      <Seo lang="zh-CN" title={title} />
+      <Seo title={title} />
       <div className="problem-info">
         <h2 className="problem-title">
           {number}. {title}
