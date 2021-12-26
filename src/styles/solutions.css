@@ -29,12 +29,12 @@
   font-size: 85%;
 }
 
-.problem-topics {
+.problem-tags {
   list-style-type: none;
   padding-inline-start: 0;
 }
 
-.problem-topic {
+.problem-tag {
   display: inline;
   margin-left: 1rem;
   padding: 3px 10px;
