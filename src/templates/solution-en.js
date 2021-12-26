@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { graphql, Link } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import Layout from "../components/layout-en";
@@ -25,8 +25,6 @@ const RelatedProblems = ({ related_problems }) => {
 const SolutionPage = ({ data }) => {
   const { title, difficulties, link, number, related_problems, topics } =
     data.mdx.frontmatter;
-
-  const [language, setLanguage] = useState("none");
 
   return (
     <Layout>
@@ -56,19 +54,9 @@ const SolutionPage = ({ data }) => {
             </li>
           ))}
         </ul>
-        <label htmlFor="language-choice">Solution language choice: </label>
-        <select
-          id="language-choice"
-          name="language-choice"
-          onChange={e => setLanguage(e.target.value)}
-        >
-          <option value="none">Hide code</option>
-          <option value="cpp">C++</option>
-          <option value="java">Java</option>
-        </select>
       </div>
 
-      <div className={`language-${language}`}>
+      <div className="solution-main">
         <MDXRenderer>{data.mdx.body}</MDXRenderer>
       </div>
       <RelatedProblems related_problems={related_problems} />

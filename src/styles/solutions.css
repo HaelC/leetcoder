@@ -56,33 +56,29 @@
   color: lightskyblue;
 }
 
-pre[class^="language-"] {
-  display: none;
-}
-
-div[class^="language-"] p {
+.solution-main p {
   line-height: 1.6;
   font-size: 1.1rem;
 }
 
-div[class^="language-"] li {
+.solution-main li {
   line-height: 1.6;
 }
 
-div[class^="language-"] a {
+.solution-main a {
   color: gray;
-}
-
-.language-cpp .language-cpp {
-  display: block;
-}
-
-.language-java .language-java {
-  display: block;
 }
 
 .solution-list a {
   color: black;
   text-decoration: none;
   line-height: 1.8;
+}
+
+.code-details {
+  margin: 10px;
+}
+
+.code-details:hover {
+  cursor: pointer;
 }
