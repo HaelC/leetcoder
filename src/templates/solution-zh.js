@@ -23,7 +23,7 @@ const RelatedProblems = ({ related_problems }) => {
 };
 
 const SolutionPage = ({ data }) => {
-  const { title, difficulties, link, number, related_problems, topics } =
+  const { title, difficulties, link, number, related_problems, tags } =
     data.mdx.frontmatter;
 
   const zhToEn = {
@@ -34,7 +34,7 @@ const SolutionPage = ({ data }) => {
 
   return (
     <Layout>
-      <Seo lang="zh-CN" title={title} />
+      <Seo title={title} />
       <div className="problem-info">
         <h2 className="problem-title">
           {number}. {title}
@@ -52,11 +52,11 @@ const SolutionPage = ({ data }) => {
         >
           LeetCode 链接
         </a>
-        <ul className="problem-topics">
-          Topics:
-          {topics.map(topic => (
-            <li className="problem-topic" key={topic}>
-              {topic}
+        <ul className="problem-tags">
+          标签：
+          {tags.map(tag => (
+            <li className="problem-tag" key={tag}>
+              {tag}
             </li>
           ))}
         </ul>
@@ -79,7 +79,7 @@ export const query = graphql`
         link
         number
         related_problems
-        topics
+        tags
       }
       body
     }

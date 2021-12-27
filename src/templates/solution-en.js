@@ -23,7 +23,7 @@ const RelatedProblems = ({ related_problems }) => {
 };
 
 const SolutionPage = ({ data }) => {
-  const { title, difficulties, link, number, related_problems, topics } =
+  const { title, difficulties, link, number, related_problems, tags } =
     data.mdx.frontmatter;
 
   return (
@@ -46,11 +46,11 @@ const SolutionPage = ({ data }) => {
         >
           LeetCode Link
         </a>
-        <ul className="problem-topics">
-          Topics:
-          {topics.map(topic => (
-            <li className="problem-topic" key={topic}>
-              {topic}
+        <ul className="problem-tags">
+          Tags:
+          {tags.map(tag => (
+            <li className="problem-tag" key={tag}>
+              {tag}
             </li>
           ))}
         </ul>
@@ -73,7 +73,7 @@ export const query = graphql`
         link
         number
         related_problems
-        topics
+        tags
       }
       body
     }

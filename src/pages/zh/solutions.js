@@ -6,7 +6,7 @@ import Seo from "../../components/seo";
 const SolutionsPage = ({ data }) => {
   return (
     <Layout>
-      <Seo lang="zh-CN" title="Solutions" />
+      <Seo title="Solutions" />
       <ul className="solution-list">
         {data.allMdx.nodes.map(node => (
           <li key={node.id}>

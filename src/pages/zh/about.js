@@ -5,7 +5,7 @@ import Seo from "../../components/seo";
 export default function About() {
   return (
     <Layout>
-      <Seo lang="zh-CN" title="About" description="About LeetCoder" />
+      <Seo title="About" description="About LeetCoder" />
       <h2>关于 LeetCoder</h2>
       <p>
         LeetCoder is a website which includes solutions for LeetCode problems.
