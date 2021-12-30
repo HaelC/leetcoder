@@ -7,6 +7,8 @@ tags: [Array, Hash Table, Sorting, Two Pointers]
 related_problems: [[Two Sum, two-sum]]
 ---
 
+import TwoSumFollowUpEn from "../followup/two-sum.js";
+
 Two sum is the first problem on LeetCode, and it is the most famous and classic one. It is an easy problem, but it has many different solutions and various follow-ups. Many companies would like to ask two sum in tech interviews. Now let's take a look at how to solve this problem.
 
 ### Solution 1: Brute Force
@@ -217,3 +219,5 @@ class Solution {
 
 - **Time Complexity**: $O(n\text{log}(n))$. The time complexity of sorting the array is $O(n\text{log}(n))$, and the time complexity of the two pointers is $O(n)$. Therefore, the total time complexity is $O(n\text{log}(n))$.
 - **Space Complexity**: $O(n)$. We need an additional array with size `n`.
+
+<TwoSumFollowUpEn />
