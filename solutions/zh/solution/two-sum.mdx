@@ -4,7 +4,8 @@ title: 两数之和
 link: https://leetcode-cn.com/problems/two-sum/
 difficulties: [简单]
 tags: [数组, 哈希表, 排序, 双指针]
-related_problems: [[两数之和, two-sum]]
+related_problems:
+  [[两数之和 II - 输入有序数组, two-sum-ii-input-array-is-sorted]]
 ---
 
 import TwoSumFollowUpZh from "../followup/two-sum.js";
@@ -18,7 +19,7 @@ import TwoSumFollowUpZh from "../followup/two-sum.js";
 因为同一个元素无法使用两次，所以为了避免`i`和`j`重复，我们将变量`i`从`0`到`n`进行遍历，将`j`从`i + 1`到`n`进行遍历，其中`n`为给定数组的大小。如果在坐标`i`和`j`的两个数相加等于目标数`target`，那么我们就找到了想要的结果，便可以返回`{i, j}`。
 
 <details class="code-details">
-    <summary>C++ Solution</summary>
+    <summary>C++解法</summary>
 
 ```cpp
 class Solution {
@@ -44,7 +45,7 @@ public:
 </details>
 
 <details class="code-details">
-    <summary>Java Solution</summary>
+    <summary>Java解法</summary>
 
 ```java
 class Solution {
@@ -66,10 +67,10 @@ class Solution {
 
 </details>
 
-**分析:**
+**分析：**
 
-- **时间复杂度**: $O(n^2)$。 嵌套的 `for` 循环需要 $O(n^2)$ 的时间复杂度。
-- **空间复杂度**: $O(1)$。 除了定义三个整形变量`n, i, j`外，我们没有使用额外的空间。
+- **时间复杂度：** $O(n^2)$。 嵌套的 `for` 循环需要 $O(n^2)$ 的时间复杂度。
+- **空间复杂度：** $O(1)$。 除了定义三个整形变量`n, i, j`外，我们没有使用额外的空间。
 
 ### 解法二：哈希表
 
@@ -78,7 +79,7 @@ class Solution {
 在遍历数组时，我们依次得到数组中的每一个数`num`。我们首先检查哈希表中是否存在`target - num`。若存在，则意味着我们找到了两个数(`target - num`与`num`)，其相加之和等于`target`，于是我们便可以返回对应的结果。若不存在，那么我们就在哈希图中记录`num`以及对应的下标，以供之后查找。
 
 <details class="code-details">
-    <summary>C++ Solution</summary>
+    <summary>C++解法</summary>
 
 ```cpp
 class Solution {
@@ -103,7 +104,7 @@ public:
 </details>
 
 <details class="code-details">
-    <summary>Java Solution</summary>
+    <summary>Java解法</summary>
 
 ```java
 class Solution {
@@ -141,7 +142,7 @@ class Solution {
 问题要求返回的是下标，所以我们在对数组排序时需稍加注意。我们可以新建一个数组，用数据结构“数对”`pair`来储存数字和其下标。我们无需对原始数组进行排序，而是根据数对的第一个值，对新数组进行排序。
 
 <details class="code-details">
-    <summary>C++ Solution</summary>
+    <summary>C++解法</summary>
 
 ```cpp
 class Solution {
@@ -179,7 +180,7 @@ public:
 </details>
 
 <details class="code-details">
-    <summary>Java Solution</summary>
+    <summary>Java解法</summary>
 
 ```java
 class Solution {

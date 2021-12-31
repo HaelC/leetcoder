@@ -4,12 +4,14 @@ title: Two Sum
 link: https://leetcode.com/problems/two-sum/
 difficulties: [easy]
 tags: [Array, Hash Table, Sorting, Two Pointers]
-related_problems: [[Two Sum, two-sum]]
+related_problems:
+  [[Two Sum II - Input Array Is Sorted, two-sum-ii-input-array-is-sorted]]
 ---
 
+import { Link } from "gatsby";
 import TwoSumFollowUpEn from "../followup/two-sum.js";
 
-Two sum is the first problem on LeetCode, and it is the most famous and classic one. It is an easy problem, but it has many different solutions and various follow-ups. Many companies would like to ask two sum in tech interviews. Now let's take a look at how to solve this problem.
+Two Sum is the first problem on LeetCode, and it is the most famous and classic one. It is an easy problem, but it has many different solutions and various follow-ups. Many companies would like to ask two sum in tech interviews. Now let's take a look at how to solve this problem.
 
 ### Solution 1: Brute Force
 
@@ -134,9 +136,9 @@ class Solution {
 
 ### Solution 3: Sorting and Two Pointers
 
-The third solution provides a complete new idea to solve this problem. This solution uses two techniques: sorting and two pointers. If we applies sorting first, we will get a sorted array. Then we can use two pointers to find two numbers. (In [Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/), we can directly use two pointers.)
+The third solution provides a complete new idea to solve this problem. This solution uses two techniques: sorting and two pointers. If we applies sorting first, we will get a sorted array. Then we can use two pointers to find two numbers. (In <Link to="/en/solution/two-sum-ii-input-array-is-sorted">Two Sum II - Input Array Is Sorted</Link>, we can directly use two pointers.)
 
-Two pointers (`p1` and `p2`) will point to two different numbers (`num1` and `num2`). At first, `p1` points to the first element in array, which is the smallest number; and `p2` points to the last element which is the largest. If `num1 + num2 == target`, then we find two numbers whose sum equals `target`; if `num1 + num2 < target`, it means `num1` is a bit small, we can move `p1` to the right so that `num1` will be a bit larger; if `num1 + num2 > target`, then move `p2` to the left to make `num2` smaller. Repeat the process until we find the two numbers.
+Two pointers (`p1` and `p2`) will point to two different numbers (`num1` and `num2`). At first, `p1` points to the first element in array, which is the smallest number; and `p2` points to the last element which is the largest. If `num1 + num2 == target`, then we find two numbers whose sum equals `target`; if `num1 + num2 < target`, it means `num1` is a bit small, we can move `p1` to the right so that `num1` will be a bit larger; if `num1 + num2 > target`, then move `p2` to the left to make `num2` smaller. Repeat the process until we find the two numbers whose sum equals `target`.
 
 This problem asks us to return the indices, so we need to be careful when sorting the array. We can create a new array to store both the number and its index with the `pair` data structure. Instead of sorting the original array, we can sort the new array based on the pair's first value.
 

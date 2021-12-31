@@ -1,7 +1,7 @@
 import React from "react";
 
 const TwoSumFollowUpZh = () => (
-  <div className="follow-up">
+  <div id="follow-up">
     <h3>后续问题</h3>
     <ul className="follow-up-list">
       <li>

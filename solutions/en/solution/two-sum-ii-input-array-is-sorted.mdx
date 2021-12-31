@@ -1,0 +1,163 @@
+---
+number: 167
+title: Two Sum II - Input Array Is Sorted
+link: https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
+difficulties: [easy]
+tags: [Array, Two Pointers, Binary Search]
+related_problems: [[Two Sum, two-sum]]
+---
+
+import { Link } from "gatsby";
+
+[Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) is a follow-up of the original [Two Sum problem](https://leetcode.com/problems/two-sum/), adding a condition that the input array is sorted. We can use all <Link to="/en/solution/two-sum">solutions for Two Sum</Link>. Since the input array is sorted, we can solve the problem in different ways.
+
+### Solution 1: Two Pointers
+
+Two pointers (`p1` and `p2`) will point to two different numbers (`num1` and `num2`). At first, `p1` points to the first element in array, which is the smallest number; and `p2` points to the last element which is the largest. If `num1 + num2 == target`, then we find two numbers whose sum equals `target`; if `num1 + num2 < target`, it means `num1` is a bit small, we can move `p1` to the right so that `num1` will be a bit larger; if `num1 + num2 > target`, then move `p2` to the left to make `num2` smaller. Repeat the process until we find the two numbers.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        int p1 = 0, p2 = numbers.size() - 1;
+        while (p1 < p2) {
+            int num1 = numbers[p1], num2 = numbers[p2];
+            if (num1 + num2 == target) {
+                return {p1 + 1, p2 + 1};
+            }
+            else if (num1 + num2 < target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+
+        return {-1, -1};
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int p1 = 0, p2 = numbers.length - 1;
+        while (p1 < p2) {
+            int num1 = numbers[p1], num2 = numbers[p2];
+            if (num1 + num2 == target) {
+                return new int[] {p1 + 1, p2 + 1};
+            }
+            else if (num1 + num2 < target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+
+        return null;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity**: $O(n)$. The `while` loop will iterate the input array and time complexity is $O(n)$.
+- **Space complexity**: $O(1)$. We only declared necessary integers (two for pointers, and two for numbers), and don't need any additional space.
+
+### Solution 2: Binary Search
+
+Binary search is often used in sorted array, and this problem can also be solved with binary search.
+
+We can use a `for` loop to iterate through the input array. For each index `i`, we will use the binary search to find whether the remaining array (from index `i + 1` to `n - 1`, where `n` is the size of the input array) contains an element `target - numbers[i]`.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        int n = numbers.size();
+        for (int i = 0; i < n; i++) {
+            int number = numbers[i];
+            // binary search from i + 1 to n - 1
+            int left = i + 1, right = n - 1;
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+                int sum = number + numbers[mid];
+                if (sum == target) {
+                    return {i + 1, mid + 1};
+                }
+                else if (sum < target) {
+                    left = mid + 1;
+                }
+                else {
+                    right = mid - 1;
+                }
+            }
+        }
+
+        return {-1, -1};
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int n = numbers.length;
+        for (int i = 0; i < n; i++) {
+            int number = numbers[i];
+            // binary search from i + 1 to n - 1
+            int left = i + 1, right = n - 1;
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+                int sum = number + numbers[mid];
+                if (sum == target) {
+                    return new int[] {i + 1, mid + 1};
+                }
+                else if (sum < target) {
+                    left = mid + 1;
+                }
+                else {
+                    right = mid - 1;
+                }
+            }
+        }
+
+        return null;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time Complexity**: $O(n\text{log}(n))$. The `for` loop will iterate `n` elements, and the binary search in the loop takes $O(\text{log}(n))$. So the total time complexity is $O(n\text{log}(n))$.
+- **Space Complexity**: $O(1)$. We only need constant space.
+
+<div id="follow-up">
+  <h3>Follow-ups</h3>
+  <p>
+    Most of the original{" "}
+    <Link to="/en/solution/two-sum#follow-up">Two Sum's follow-ups</Link> are
+    still applicable.
+  </p>
+</div>
