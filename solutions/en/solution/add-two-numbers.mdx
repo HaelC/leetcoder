@@ -1,0 +1,360 @@
+---
+number: 2
+title: Add Two Numbers
+link: https://leetcode.com/problems/add-two-numbers/
+difficulties: [medium]
+tags: [Linked List, Math, Recursion]
+related_problems: []
+---
+
+Adding two numbers is a straight-forward math problem. We just add digit by digit, from the least-significant digit to the most significant. If there's carry, we add carry as well. How do we solve the problem with our code to deal with the linked list data structure?
+
+### Solution 1: Simulating
+
+In this problem, the digits are stored in reverse order. Therefore the head of `l1` and `l2` are two least-significant digit. We need to declare a `carry` variable with initial value 0. We can add two digits and carry to get the sum (`sum = l1.val + l2.val + carry`). `sum` might be greater than or equal to 10, and we use $sum \text{ mod } 10$ and $\lfloor\frac{sum}{10}\rfloor$ to get new digit and carry. Then we move `l1` and `l2` to their next nodes to simulate the adding process.
+
+When simulating the adding process, there are three different situations:
+
+- Both `l1` and `l2` are non-null nodes. `sum = l1.val + l2.val + carry`. Move `l1` and `l2` to their next nodes.
+- `l1` is non-null and `l2` is null. `sum = l1.val + carry`. Move `l1` to the next.
+- `l1` is null and `l2` is non-null. `sum = l2.val + carry`. Move `l2` to the next.
+
+We can either use three `while` loops, or use one `while` loop to handle the logic.
+
+After the loop is completed, we need to check the value of `carry`. If `carry == 1`, create a new node with value `1` to represent the most-significant digit.
+
+<details class="code-details">
+    <summary>C++ Solution with 3 loops</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* head = new ListNode();
+        ListNode* cur = head;
+
+        int carry = 0;
+        while (l1 && l2) {
+            int sum = l1->val + l2->val + carry;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+            carry = sum / 10;
+            l1 = l1->next;
+            l2 = l2->next;
+        }
+
+        while (l1) {
+            int sum = l1->val + carry;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+            carry = sum / 10;
+            l1 = l1->next;
+        }
+
+        while (l2) {
+            int sum = l2->val + carry;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+            carry = sum / 10;
+            l2 = l2->next;
+        }
+
+        if (carry) {
+            cur->next = new ListNode(carry);
+        }
+
+        return head->next;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>C++ Solution with 1 loop</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* head = new ListNode();
+        ListNode* cur = head;
+        int carry = 0;
+
+        while (l1 || l2) {
+            int val1 = l1 ? l1 -> val : 0;
+            int val2 = l2 ? l2 -> val : 0;
+            int sum = val1 + val2 + carry;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+            carry = sum / 10;
+            if (l1) {
+                l1 = l1->next;
+            }
+            if (l2) {
+                l2 = l2->next;
+            }
+        }
+
+        if (carry) {
+            cur->next = new ListNode(carry);
+        }
+
+        return head->next;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution with 3 loops</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode();
+        ListNode cur = head;
+        int carry = 0;
+
+        while (l1 != null && l2 != null) {
+            int sum = l1.val + l2.val + carry;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            carry = sum / 10;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+
+        while (l1 != null) {
+            int sum = l1.val + carry;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            carry = sum / 10;
+            l1 = l1.next;
+        }
+
+        while (l2 != null) {
+            int sum = l2.val + carry;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            carry = sum / 10;
+            l2 = l2.next;
+        }
+
+        if (carry == 1) {
+            cur.next = new ListNode(carry);
+        }
+
+        return head.next;
+    }
+}
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution with 1 loop</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode();
+        ListNode cur = head;
+        int carry = 0;
+
+        while (l1 != null || l2 != null) {
+            int val1 = l1 == null ? 0 : l1.val;
+            int val2 = l2 == null ? 0 : l2.val;
+            int sum = val1 + val2 + carry;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            carry = sum / 10;
+            if (l1 != null) {
+                l1 = l1.next;
+            }
+            if (l2 != null) {
+                l2 = l2.next;
+            }
+        }
+
+        if (carry == 1) {
+            cur.next = new ListNode(carry);
+        }
+
+        return head.next;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(m+n)$, where `m` is the size of `l1` and `n` is the size of `l2`. We will check all the nodes in `l1` and `l2`.
+- **Space complexity:** $O(1)$. We only need constant space.
+
+### Solution 2: Recursion
+
+We can also use recursion to solve the problem.
+
+- The base case is that both `l1` and `l2` are null, and `carry` is 0 as well. In this case we don't need to create new node and we can simply return null.
+- Otherwise, we can get the current `sum` by adding `l1.val` (if existing), `l2.val` (if existing) and `carry`. Create a node with value `sum % 10` and update `carry` to `sum / 10`. Set the node's `next` by calling the recursive function.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+private:
+    ListNode* addTwoNumbersHelper(ListNode* l1, ListNode* l2, int carry) {
+        if (!l1 && !l2 && !carry) {
+            return NULL;
+        }
+
+        int sum = carry;
+        if (l1) {
+            sum += l1->val;
+            l1 = l1->next;
+        }
+
+        if (l2) {
+            sum += l2->val;
+            l2 = l2->next;
+        }
+
+        ListNode* node = new ListNode(sum % 10);
+        carry = sum / 10;
+        node->next = addTwoNumbersHelper(l1, l2, carry);
+        return node;
+    }
+
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        return addTwoNumbersHelper(l1, l2, 0);
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        return addTwoNumbersHelper(l1, l2, 0);
+    }
+
+    private ListNode addTwoNumbersHelper(ListNode l1, ListNode l2, int carry) {
+        if (l1 == null && l2 == null && carry == 0) {
+            return null;
+        }
+
+        int sum = carry;
+        if (l1 != null) {
+            sum += l1.val;
+            l1 = l1.next;
+        }
+
+        if (l2 != null) {
+            sum += l2.val;
+            l2 = l2.next;
+        }
+
+        ListNode node = new ListNode(sum % 10);
+        carry = sum / 10;
+        node.next = addTwoNumbersHelper(l1, l2, carry);
+
+        return node;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(m+n)$. All nodes will be checked and the time complexity is $O(m+n)$.
+- **Space complexity:** $O(m+n)$. The recursive function will be called $\text{max}(m, n)$ times and takes up space.
+
+<div id="follow-up">
+  <h3>Follow-ups</h3>
+  <ul className="follow-up-list">
+    <li>
+      <i>
+        In this problem, the digits are stored in reverse order. What if the
+        digits are stored in original order?
+      </i>
+      <pre>
+        <strong>Input:</strong> l1 = [3,4,2], l2 = [4,6,5] <br />
+        <strong>Output:</strong> [8,0,7]
+      </pre>
+      <p>
+        We can reverse the input linked lists, apply the solution of this
+        problem, then reverse the result and we will get the desired output.
+      </p>
+    </li>
+  </ul>
+</div>
