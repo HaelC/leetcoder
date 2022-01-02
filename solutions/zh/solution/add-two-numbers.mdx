@@ -1,0 +1,357 @@
+---
+number: 2
+title: 两数相加
+link: https://leetcode-cn.com/problems/add-two-numbers/
+difficulties: [中等]
+tags: [链表, 数学, 递归]
+related_problems: []
+---
+
+两数相加是一个简单的数学问题。我们从最低位到最高位一位一位相加，如果包含进位，那么也加上进位。我们该如何用代码来解决由链表表示的这一问题呢？
+
+### 解法 1： 模拟
+
+在这问题中，数字的每一位是逆序存储的。因此，`l1`和`l2`的头节点表示最低位的数。我们需要定义一个`carry`变量来存放进位值，其初始值为 0。我们可以通过`sum = l1.val + l2.val + carry`来计算每一位的和。`sum`可能会大于等于 10，我们分别用$sum \text{ mod } 10$以及$\lfloor\frac{sum}{10}\rfloor$来记录新的一位数和进位。随后我们分别将`l1`和`l2`移至下一节点，来模拟加法的过程。
+
+在模拟加法的过程中，共有三种不同的情况：
+
+- `l1`和`l2`都是非空节点。`sum = l1.val + l2.val + carry`。分别将`l1`和`l2`移至下一节点。
+- `l1`为非空节点，`l2`为空。`sum = l1.val + carry`。移动`l1`至下一节点。
+- `l1`为空，`l2`为非空节点。`sum = l2.val + carry`。移动`l2`至下一节点。
+
+我们可以使用 3 个`while`循环，或者就一个`while`循环来处理逻辑。
+
+当循环结束，我们需要检查`carry`的值。若`carry == 1`，那么我们需要新建一个值为 1 的节点来表示新的最高位。
+
+<details class="code-details">
+    <summary>C++解法（三个while循环）</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* head = new ListNode();
+        ListNode* cur = head;
+
+        int carry = 0;
+        while (l1 && l2) {
+            int sum = l1->val + l2->val + carry;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+            carry = sum / 10;
+            l1 = l1->next;
+            l2 = l2->next;
+        }
+
+        while (l1) {
+            int sum = l1->val + carry;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+            carry = sum / 10;
+            l1 = l1->next;
+        }
+
+        while (l2) {
+            int sum = l2->val + carry;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+            carry = sum / 10;
+            l2 = l2->next;
+        }
+
+        if (carry) {
+            cur->next = new ListNode(carry);
+        }
+
+        return head->next;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>C++解法（一个while循环）</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* head = new ListNode();
+        ListNode* cur = head;
+        int carry = 0;
+
+        while (l1 || l2) {
+            int val1 = l1 ? l1 -> val : 0;
+            int val2 = l2 ? l2 -> val : 0;
+            int sum = val1 + val2 + carry;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+            carry = sum / 10;
+            if (l1) {
+                l1 = l1->next;
+            }
+            if (l2) {
+                l2 = l2->next;
+            }
+        }
+
+        if (carry) {
+            cur->next = new ListNode(carry);
+        }
+
+        return head->next;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法（三个while循环）</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode();
+        ListNode cur = head;
+        int carry = 0;
+
+        while (l1 != null && l2 != null) {
+            int sum = l1.val + l2.val + carry;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            carry = sum / 10;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+
+        while (l1 != null) {
+            int sum = l1.val + carry;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            carry = sum / 10;
+            l1 = l1.next;
+        }
+
+        while (l2 != null) {
+            int sum = l2.val + carry;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            carry = sum / 10;
+            l2 = l2.next;
+        }
+
+        if (carry == 1) {
+            cur.next = new ListNode(carry);
+        }
+
+        return head.next;
+    }
+}
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法（一个while循环）</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode();
+        ListNode cur = head;
+        int carry = 0;
+
+        while (l1 != null || l2 != null) {
+            int val1 = l1 == null ? 0 : l1.val;
+            int val2 = l2 == null ? 0 : l2.val;
+            int sum = val1 + val2 + carry;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            carry = sum / 10;
+            if (l1 != null) {
+                l1 = l1.next;
+            }
+            if (l2 != null) {
+                l2 = l2.next;
+            }
+        }
+
+        if (carry == 1) {
+            cur.next = new ListNode(carry);
+        }
+
+        return head.next;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(m+n)$，其中`m`是`l1`链表的大小，`n`是`l2`链表的大小。我们会检查`l1`和`l2`中的每一个节点。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。
+
+### 解法二：递归
+
+我们也可以用递归来解决这问题。
+
+- 递归的基础条件是`l1`和`l2`均为空，进位值`carry`也为 0。这种情况下，我们直接返回 null。
+- 其他条件下，我们可以通过加`l1.val`（若存在），`l2.val`（若存在）以及`carry`的值来得到当前`sum`。新建一个值为$sum \text{ mod } 10$的节点，并更新进位值`carry`为$\lfloor\frac{sum}{10}\rfloor$。调用递归函数来设置节点的`next`。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+private:
+    ListNode* addTwoNumbersHelper(ListNode* l1, ListNode* l2, int carry) {
+        if (!l1 && !l2 && !carry) {
+            return NULL;
+        }
+
+        int sum = carry;
+        if (l1) {
+            sum += l1->val;
+            l1 = l1->next;
+        }
+
+        if (l2) {
+            sum += l2->val;
+            l2 = l2->next;
+        }
+
+        ListNode* node = new ListNode(sum % 10);
+        carry = sum / 10;
+        node->next = addTwoNumbersHelper(l1, l2, carry);
+        return node;
+    }
+
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        return addTwoNumbersHelper(l1, l2, 0);
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        return addTwoNumbersHelper(l1, l2, 0);
+    }
+
+    private ListNode addTwoNumbersHelper(ListNode l1, ListNode l2, int carry) {
+        if (l1 == null && l2 == null && carry == 0) {
+            return null;
+        }
+
+        int sum = carry;
+        if (l1 != null) {
+            sum += l1.val;
+            l1 = l1.next;
+        }
+
+        if (l2 != null) {
+            sum += l2.val;
+            l2 = l2.next;
+        }
+
+        ListNode node = new ListNode(sum % 10);
+        carry = sum / 10;
+        node.next = addTwoNumbersHelper(l1, l2, carry);
+
+        return node;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(m+n)$。所有的节点都会检查一遍，时间复杂度为$O(m+n)$。
+- **空间复杂度：** $O(m+n)$。递归函数会被调用$\text{max}(m, n)$次。
+
+<div id="follow-up">
+  <h3>后续问题</h3>
+  <ul className="follow-up-list">
+    <li>
+      <i>这个问题里的数字是按照逆序方式存储。如果是按照顺序方式存储呢？</i>
+      <pre>
+        <strong>输入：</strong> l1 = [3,4,2], l2 = [4,6,5]
+        <br />
+        <strong>输出：</strong> [8,0,7]
+      </pre>
+      <p>
+        我们可以将输入的链表反转，再应用本题的题解，最后将结果再反转就可以得到想要的输出。
+      </p>
+    </li>
+  </ul>
+</div>
