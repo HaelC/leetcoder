@@ -1,0 +1,257 @@
+---
+number: 206
+title: Reverse Linked List
+link: https://leetcode.com/problems/reverse-linked-list/
+difficulties: [easy]
+tags: [Linked List, Recursion]
+related_problems: []
+---
+
+### Solution 1: Iterative
+
+Let's think about a linked list with 3 nodes `1->2->3`, after reversing the linked list will be `3->2->1`. Here are the steps:
+
+1. set `node_1`'s `next` node as null
+2. set `node_2`'s `next` node as `node_1`
+3. set `node_3`'s `next` node as `node_2`
+4. return `node_3`
+
+Similar to many linked list problems, we will use a while loop to iterate through the linked list. When iterating the linked list, we need to care about three nodes: `prev`, `cur` and `next`. `cur` is the current node that we are iterating, and we will set `cur`'s `next` node as `prev`. Before updating `cur`'s `next` node, we need to store the original `cur`'s `next` node in a variable, otherwise we will not be able to find the next node after updating. After setting `cur`'s `next` node, we set `prev = cur` and `cur = next` for the next iteration.
+
+After the iteration, `cur` will be `null` (condition to stop the while loop), and `prev` will be the head of the reversed linked list. We can return directly `prev`.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* prev = NULL;
+        ListNode* cur = head;
+
+        while (cur) {
+            ListNode* next = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = next;
+        }
+
+        return prev;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode cur = head;
+
+        while (cur != null) {
+            ListNode next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+
+        return prev;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n)$. We will iterate through the linked list.
+- **Space complexity:** $O(1)$. We only need constant space.
+
+### Solution 2: Recursion
+
+We can also use recursion to solve the problem.
+
+Similar to the iterative solution's idea, we declare a recursive function with two parameters `cur` and `prev`. We update `cur`'s `next` node as `prev` and continue calling the recursive function. The base case is that when `cur` is `null`, we can return `prev`.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+private:
+    ListNode* reverseListHelper(ListNode* cur, ListNode* prev) {
+        if (!cur) {
+            return prev;
+        }
+
+        ListNode* next = cur->next;
+        cur->next = prev;
+        return reverseListHelper(next, cur);
+    }
+
+public:
+    ListNode* reverseList(ListNode* head) {
+        return reverseListHelper(head, NULL);
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    private ListNode reverseListHelper(ListNode cur, ListNode prev) {
+        if (cur == null) {
+            return prev;
+        }
+
+        ListNode next = cur.next;
+        cur.next = prev;
+        return reverseListHelper(next, cur);
+    }
+
+    public ListNode reverseList(ListNode head) {
+        return reverseListHelper(head, null);
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n)$. Recursive function will be called `n` times.
+- **Space complexity:** $O(n)$. Recursion takes up $O(n)$ space.
+
+### Solution 3: Additional Data Structure
+
+When dealing with linked list problems, sometimes we can use some other data structures to make the problem a bit easier. For example, in this problem, we can use an array or a stack (I use stack in the following code) to store the values of the linked list. After getting all the values of the original linked list, we can use these values to create a new linked list with reversed values.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* cur = head;
+        stack<int> s;
+        while (cur) {
+            s.push(cur->val);
+            cur = cur->next;
+        }
+
+        ListNode* dummy = new ListNode();
+        cur = dummy;
+        while (!s.empty()) {
+            cur->next = new ListNode(s.top());
+            s.pop();
+            cur = cur->next;
+        }
+
+        return dummy->next;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode cur = head;
+        Stack<Integer> stack = new Stack<>();
+        while (cur != null) {
+            stack.push(cur.val);
+            cur = cur.next;
+        }
+
+        ListNode dummy = new ListNode();
+        cur = dummy;
+        while (!stack.empty()) {
+            cur.next = new ListNode(stack.pop());
+            cur = cur.next;
+        }
+
+        return dummy.next;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n)$. Storing values in the additional data structure and creating the new linked list both takes $O(n)$ time.
+- **Space complexity:** $O(n)$. Both the additioanl data structure and the newly-created linked list has a size of `n`.

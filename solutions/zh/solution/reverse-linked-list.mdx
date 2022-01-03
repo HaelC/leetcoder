@@ -1,0 +1,256 @@
+---
+number: 206
+title: Reverse Linked List
+link: https://leetcode-cn.com/problems/reverse-linked-list/
+difficulties: [简单]
+tags: [链表, 递归]
+related_problems: []
+---
+
+### 解法一：迭代
+
+我们来考虑一个含有 3 个节点的链表`1->2->3`，反转之后的链表会是`3->2->1`。反转包括以下几个步骤：
+
+1. 将`node_1`的`next`节点设为 null
+2. 将`node_2`的`next`节点设为`node_1`
+3. 将`node_3`的`next`节点设为`node_2`
+4. 返回`node_3`
+
+和许多链表类题目一样，我们用一个 while 循环来对链表进行迭代。在迭代时，我们关注三个节点，前一节点`prev`，当前节点`cur`和下一节点`next`。`cur`是我们当前迭代的节点，我们要将`cur`的`next`节点设为`prev`。在更新`cur`的`next`节点前，我们需要用一变量存储`cur`原先的`next`节点，否则在更新之后我们没有办法再找到它原来的`next`节点。在设好`cur`的`next`节点后，我们更新`prev = cur`和`cur = next`来为下一次迭代做准备。
+在迭代完成之后，`cur`会为空（循环结束条件），`prev`则会是反转链表的头节点，我们可以直接返回`prev`。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* prev = NULL;
+        ListNode* cur = head;
+
+        while (cur) {
+            ListNode* next = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = next;
+        }
+
+        return prev;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode cur = head;
+
+        while (cur != null) {
+            ListNode next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+
+        return prev;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n)$。我们对链表进行迭代。
+- **空间复杂度：** $O(1)$。我们仅需要常数级空间。
+
+### 解法二：递归
+
+我们要可以用递归来解决该问题。
+
+与迭代的想法类似，我们定义一个含有`cur`和`prev`两个参数的递归函数。在递归函数里我们将`cur`的`next`节点设为`prev`，并继续调用递归函数。基础条件是当`cur`为空时，我们返回`prev`。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+private:
+    ListNode* reverseListHelper(ListNode* cur, ListNode* prev) {
+        if (!cur) {
+            return prev;
+        }
+
+        ListNode* next = cur->next;
+        cur->next = prev;
+        return reverseListHelper(next, cur);
+    }
+
+public:
+    ListNode* reverseList(ListNode* head) {
+        return reverseListHelper(head, NULL);
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    private ListNode reverseListHelper(ListNode cur, ListNode prev) {
+        if (cur == null) {
+            return prev;
+        }
+
+        ListNode next = cur.next;
+        cur.next = prev;
+        return reverseListHelper(next, cur);
+    }
+
+    public ListNode reverseList(ListNode head) {
+        return reverseListHelper(head, null);
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n)$。递归函数会被调用`n`次。
+- **空间复杂度：** $O(n)$。递归需占用$O(n)$的空间。
+
+### 解法三：额外数据结构
+
+在处理链表问题时，有时我们可以利用别的数据结构来使问题简化。比如在这个问题中，我们可以使用数组或者栈（下面的代码里我用了栈）来存储链表的值。在得到所有原链表的值后，我们可以通过这些值来新建一个反转的链表。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* cur = head;
+        stack<int> s;
+        while (cur) {
+            s.push(cur->val);
+            cur = cur->next;
+        }
+
+        ListNode* dummy = new ListNode();
+        cur = dummy;
+        while (!s.empty()) {
+            cur->next = new ListNode(s.top());
+            s.pop();
+            cur = cur->next;
+        }
+
+        return dummy->next;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode cur = head;
+        Stack<Integer> stack = new Stack<>();
+        while (cur != null) {
+            stack.push(cur.val);
+            cur = cur.next;
+        }
+
+        ListNode dummy = new ListNode();
+        cur = dummy;
+        while (!stack.empty()) {
+            cur.next = new ListNode(stack.pop());
+            cur = cur.next;
+        }
+
+        return dummy.next;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n)$。在额外的数据结构中存储数据，以及创建新的链表都需要$O(n)$的时间。
+- **空间复杂度：** $O(n)$。额外的数据结构和新建的链表的大小都是`n`。

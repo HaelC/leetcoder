@@ -7,6 +7,8 @@ tags: [Linked List, Math, Recursion]
 related_problems: []
 ---
 
+import { Link } from "gatsby";
+
 Adding two numbers is a straight-forward math problem. We just add digit by digit, from the least-significant digit to the most significant. If there's carry, we add carry as well. How do we solve the problem with our code to deal with the linked list data structure?
 
 ### Solution 1: Simulating
@@ -352,8 +354,12 @@ class Solution {
         <strong>Output:</strong> [8,0,7]
       </pre>
       <p>
-        We can reverse the input linked lists, apply the solution of this
-        problem, then reverse the result and we will get the desired output.
+        We can reverse the input linked lists (see{" "}
+        <Link to="/en/solution/reverse-linked-list">
+          solution for reverse linked list
+        </Link>
+        ), apply the solution of this problem, then reverse the result and we
+        will get the desired output.
       </p>
     </li>
   </ul>
