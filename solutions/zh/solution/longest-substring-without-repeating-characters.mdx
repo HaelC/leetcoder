@@ -1,0 +1,93 @@
+---
+number: 3
+title: 无重复字符的最长子串
+link: https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
+difficulties: [中等]
+tags: [字符串, 滑动窗口, 哈希表]
+related_problems: []
+---
+
+### 解法一：滑动窗口
+
+我们可以用滑动窗口来解决问题，其中滑动窗口表示当前无重复字符的子字符串。滑动窗口的左端（在代码里由变量`begin`表示）初始化为 0，滑动窗口的右端则与遍历字符串时的下标`i`的值保持一致。
+
+在遍历字符串时，我们将`i`（滑动窗口的右端）加一，意味着下标`i`的字符`c`加到了滑动窗口中。我们需要检查之前的滑动窗口（从`begin`到`i - 1`）中是否包含字符`c`。若不包含字符`c`，则不需要更新滑动窗口的左端；否则我们需要更新滑动窗口的左端，使现在的滑动窗口不包含重复字符`c`。
+
+我们如何检查之前的滑动窗口是否含有字符`c`呢？我们可以从`begin`到`i - 1`检查每一位字符。不过哈希表是一个更好的选择。我们可以用`hashmap`来记录每个字符和其最新的下标。有以下两种情况表明之前的滑动窗口不包含字符`c`：
+
+- 哈希表中不包含`c`，意味着字符`c`是第一次出现
+- 哈希表中包含`c`，但是`hashmap[c] < begin`，意味着`c`之前出现过，但是它的下标要小于`begin`，不在滑动窗口范围内。
+
+如果`hashmap[c] >= begin`，这就意味着之前的滑动窗口包含了字符`c`。我们需要将滑动窗口的左端（`begin`）移至`hashmap[c] + 1`来移除先前的`c`。
+
+之后我们就可以计算当前滑动窗口的宽度（`i - begin + 1`），并且在哈希图中记录字符的下标（`hashmap[c]=i`）。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char, int> hashmap;
+        int longest = 0, n = s.length(), begin = 0;
+
+        for (int i = 0; i < n; i++) {
+            char c = s[i];
+            if (hashmap.count(c) > 0 && hashmap[c] >= begin) {
+                begin = hashmap[c] + 1;
+            }
+            longest = max(longest, i - begin + 1);
+            hashmap[c] = i;
+        }
+
+        return longest;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> hashmap = new HashMap<>();
+        int longest = 0, n = s.length(), begin = 0;
+
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (hashmap.containsKey(c) && hashmap.get(c) >= begin) {
+                begin = hashmap.get(c) + 1;
+            }
+            longest = Math.max(longest, i - begin + 1);
+            hashmap.put(c, i);
+        }
+
+        return longest;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n)$。我们遍历了大小为`n`的字符串.
+- **空间复杂度：** $O(\text{min}(m,n))$。其中`m`是字符集的大小，`n`是字符串的大小。
+
+<div id="follow-up">
+  <h3>后续问题</h3>
+  <ul className="follow-up-list">
+    <li>
+      <i>在该问题中，我们需要返回子串的长度。如果是返回子串本身呢？</i>
+      <pre>
+        <strong>输入：</strong> s = "abcabcbb" <br />
+        <strong>输出：</strong> "abc"
+      </pre>
+      <p>我们可以用一个变量来直接存储最长子串，而不是存储最长的长度。</p>
+    </li>
+  </ul>
+</div>

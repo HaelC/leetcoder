@@ -21,7 +21,8 @@ tags = {
     'Breadth-First Search': '广度优先搜索', 'Greedy': '贪心',
     'Tree': '树', 'Binary Tree': '二叉树', 'Stack': '栈',
     'Queue': '队列', 'Heap (Priority Queue)': '堆（优先队列）',
-    'Recursion': '递归', 'Backtracking': '回溯'
+    'Recursion': '递归', 'Backtracking': '回溯',
+    'Sliding Window': '滑动窗口'
 }
 word_dict = {
     'Analysis:': '分析：', 'Time complexity:': '时间复杂度：',

@@ -1,0 +1,99 @@
+---
+number: 3
+title: Longest Substring Without Repeating Characters
+link: https://leetcode.com/problems/longest-substring-without-repeating-characters/
+difficulties: [medium]
+tags: [String, Sliding Window, Hash Table]
+related_problems: []
+---
+
+### Solution 1: Sliding Window
+
+We can use sliding window to solve this problem, where the sliding window is the current substring without repeating characters. The sliding window's left side (variable named `begin` in the following code) is initialized as 0; while the right side is in sync with index `i` when iterating the input string.
+
+When iterating the string, we increment `i` (the right side of the sliding window) by 1, which means a new character `c` at index `i` is added to the sliding window. We need to check whether the previous sliding window (from `begin` to `i - 1`) contains the character `c`. If the previous sliding window does not contain `c`, we don't need to update the sliding window's left side; otherwise, we need to move the left side so that the current sliding window will not contain repeating characters `c`.
+
+How do we check if the previous sliding window contains `c`? Well we can check each character from `begin` to `i - 1`. There's a better option with a hash table. We can store the character together with its latest index in a `hashmap`. There are two cases indicating the previous sliding window does not contain `c`:
+
+- The hash table does not contain `c`, which means we have never met `c` before.
+- The hash table contains `c`, but `hashmap[c] < begin`, which means that we have met `c` before, but its index is less than `begin`.
+
+If `hashmap[c] >= begin`, it means that the previous sliding window contains character `c`. We need to move the left side (`begin`) to `hashmap[c] + 1` to exclude the previous `c`.
+
+After that, we calculate the width of the current sliding window(`i - begin + 1`), and store the character's index in the hashmap(`hashmap[c] = i`).
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char, int> hashmap;
+        int longest = 0, n = s.length(), begin = 0;
+
+        for (int i = 0; i < n; i++) {
+            char c = s[i];
+            if (hashmap.count(c) > 0 && hashmap[c] >= begin) {
+                begin = hashmap[c] + 1;
+            }
+            longest = max(longest, i - begin + 1);
+            hashmap[c] = i;
+        }
+
+        return longest;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> hashmap = new HashMap<>();
+        int longest = 0, n = s.length(), begin = 0;
+
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (hashmap.containsKey(c) && hashmap.get(c) >= begin) {
+                begin = hashmap.get(c) + 1;
+            }
+            longest = Math.max(longest, i - begin + 1);
+            hashmap.put(c, i);
+        }
+
+        return longest;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n)$. We iterate the string with size of `n`.
+- **Space complexity:** $O(\text{min}(m,n))$, where `m` is the size of charset and `n` is the size of input string.
+
+<div id="follow-up">
+  <h3>Follow-ups</h3>
+  <ul className="follow-up-list">
+    <li>
+      <i>
+        In this problem, we are asked to return the length of the substring. How
+        about returning the substring itself?
+      </i>
+      <pre>
+        <strong>Input:</strong> s = "abcabcbb" <br />
+        <strong>Output:</strong> "abc"
+      </pre>
+      <p>
+        Instead of storing the longest length, we can store the longest
+        substring in a variable.
+      </p>
+    </li>
+  </ul>
+</div>
