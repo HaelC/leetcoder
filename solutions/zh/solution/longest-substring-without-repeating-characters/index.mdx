@@ -13,9 +13,69 @@ related_problems: []
 
 在遍历字符串时，我们将`i`（滑动窗口的右端）加一，意味着下标`i`的字符`c`加到了滑动窗口中。我们需要检查之前的滑动窗口（从`begin`到`i - 1`）中是否包含字符`c`。若不包含字符`c`，则不需要更新滑动窗口的左端；否则我们需要更新滑动窗口的左端，使现在的滑动窗口不包含重复字符`c`。
 
-我们如何检查之前的滑动窗口是否含有字符`c`呢？我们可以从`begin`到`i - 1`检查每一位字符。不过哈希表是一个更好的选择。我们可以用`hashmap`来记录每个字符和其最新的下标。有以下两种情况表明之前的滑动窗口不包含字符`c`：
+我们如何检查之前的滑动窗口是否含有字符`c`呢？我们可以用一个新的循环，从`begin`到`i - 1`检查每一位字符。
 
-- 哈希表中不包含`c`，意味着字符`c`是第一次出现
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int longest = 0, n = s.length(), begin = 0;
+
+        for (int i = 0; i < n; i++) {
+            char c = s[i];
+            for (int j = begin; j < i; j++) {
+                if (s[j] == c) {
+                    begin = j + 1;
+                }
+            }
+            longest = max(longest, i - begin + 1);
+        }
+
+        return longest;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int longest = 0, n = s.length(), begin = 0;
+
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            for (int j = begin; j < i; j++) {
+                if (s.charAt(j) == c) {
+                    begin = j + 1;
+                }
+            }
+            longest = Math.max(longest, i - begin + 1);
+        }
+
+        return longest;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2)$。嵌套的循环需要$O(n^2)$的时间复杂度。
+- **空间复杂度：** $O(1)$。我们仅需要常数级空间。
+
+<h3 id="solution_2">解法二：滑动窗口与哈希图</h3>
+
+我们可以使用哈希图来优化解法一的时间复杂度。我们可以用`hashmap`来记录每个字符和其最新的下标。有以下两种情况表明之前的滑动窗口不包含字符`c`：
+
+- 哈希表中不包含`c`，意味着字符`c`是第一次出现。
 - 哈希表中包含`c`，但是`hashmap[c] < begin`，意味着`c`之前出现过，但是它的下标要小于`begin`，不在滑动窗口范围内。
 
 如果`hashmap[c] >= begin`，这就意味着之前的滑动窗口包含了字符`c`。我们需要将滑动窗口的左端（`begin`）移至`hashmap[c] + 1`来移除先前的`c`。
