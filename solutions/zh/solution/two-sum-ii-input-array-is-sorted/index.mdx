@@ -11,7 +11,7 @@ import { Link } from "gatsby";
 
 [两数之和 II - 输入有序数组](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/) 是原始[两数之和](https://leetcode-cn.com/problems/two-sum/)的后续问题，补充了输入数组为有序数组这一条件。我们可以使用<Link to="/en/solution/two-sum">两数之和的解法</Link>。不过既然输入数组是有序的，我们可以用不同的方法解决这一问题。
 
-### 解法一：双指针
+<h3 id="solution_1">解法一：双指针</h3>
 
 两个指针（`p1`和`p2`）分别指向两个不同的数（`num1`和`num2`）。一开始，`p1`指向数组第一个元素即最小的数，而`p2`指向最后一个元素即最大的数。如果`num1 + num2 == target`，那么我们找到了两个数；如果`num1 + num2 < target`，那么`num1`偏小了，我们可以将`p1`指针右移，使`num1`增大一点；如果`num1 + num2 > target`，那么可以将`p2`左移，使`num2`变小一点。重复该过程，直到我们找到两个数之和等于目标数。
 
@@ -75,7 +75,7 @@ class Solution {
 - **时间复杂度：** $O(n)$。`while`循环可能会遍历整个输入数组，时间复杂度是$O(n)$.
 - **空间复杂度：** $O(1)$。我们只定义了必要的整形变量（两个指针，以及两个数），不需要额外的空间。
 
-### 解法 2：二分查找
+<h3 id="solution_2">解法 2：二分查找</h3>
 
 在有序数组中经常会用到二分查找，这个问题也可以用二分查找来解决。
 

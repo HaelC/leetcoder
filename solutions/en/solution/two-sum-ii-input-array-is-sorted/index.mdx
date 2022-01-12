@@ -11,7 +11,7 @@ import { Link } from "gatsby";
 
 [Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) is a follow-up of the original [Two Sum problem](https://leetcode.com/problems/two-sum/), adding a condition that the input array is sorted. We can use all <Link to="/en/solution/two-sum">solutions for Two Sum</Link>. Since the input array is sorted, we can solve the problem in different ways.
 
-### Solution 1: Two Pointers
+<h3 id="solution_1">Solution 1: Two Pointers</h3>
 
 Two pointers (`p1` and `p2`) will point to two different numbers (`num1` and `num2`). At first, `p1` points to the first element in array, which is the smallest number; and `p2` points to the last element which is the largest. If `num1 + num2 == target`, then we find two numbers whose sum equals `target`; if `num1 + num2 < target`, it means `num1` is a bit small, we can move `p1` to the right so that `num1` will be a bit larger; if `num1 + num2 > target`, then move `p2` to the left to make `num2` smaller. Repeat the process until we find the two numbers.
 
@@ -75,7 +75,7 @@ class Solution {
 - **Time complexity:** $O(n)$. The `while` loop will iterate the input array and time complexity is $O(n)$.
 - **Space complexity:** $O(1)$. We only declared necessary integers (two for pointers, and two for numbers), and don't need any additional space.
 
-### Solution 2: Binary Search
+<h3 id="solution_2">Solution 2: Binary Search</h3>
 
 Binary search is often used in sorted array, and this problem can also be solved with binary search.
 

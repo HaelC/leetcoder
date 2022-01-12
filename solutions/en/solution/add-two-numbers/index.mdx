@@ -11,7 +11,7 @@ import { Link } from "gatsby";
 
 Adding two numbers is a straight-forward math problem. We just add digit by digit, from the least-significant digit to the most significant. If there's carry, we add carry as well. How do we solve the problem with our code to deal with the linked list data structure?
 
-### Solution 1: Simulating
+<h3 id="solution_1">Solution 1: Simulating</h3>
 
 In this problem, the digits are stored in reverse order. Therefore the head of `l1` and `l2` are two least-significant digit. We need to declare a `carry` variable with initial value 0. We can add two digits and carry to get the sum (`sum = l1.val + l2.val + carry`). `sum` might be greater than or equal to 10, and we use $sum \text{ mod } 10$ and $\lfloor\frac{sum}{10}\rfloor$ to get new digit and carry. Then we move `l1` and `l2` to their next nodes to simulate the adding process.
 
@@ -236,7 +236,7 @@ class Solution {
 - **Time complexity:** $O(m+n)$, where `m` is the size of `l1` and `n` is the size of `l2`. We will check all the nodes in `l1` and `l2`.
 - **Space complexity:** $O(1)$. We only need constant space.
 
-### Solution 2: Recursion
+<h3 id="solution_2">Solution 2: Recursion</h3>
 
 We can also use recursion to solve the problem.
 

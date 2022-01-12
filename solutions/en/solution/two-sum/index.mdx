@@ -13,7 +13,7 @@ import TwoSumFollowUpEn from "./follow-up.js";
 
 Two Sum is the first problem on LeetCode, and it is the most famous and classic one. It is an easy problem, but it has many different solutions and various follow-ups. Many companies would like to ask two sum in tech interviews. Now let's take a look at how to solve this problem.
 
-### Solution 1: Brute Force
+<h3 id="solution_1">Solution 1: Brute Force</h3>
 
 The first solution is straight-forward. The problem asks us to find the indices of two numbers whose sum equals the target value. Then we can use a nested `for` loop (with two indices, `i` and `j`) to find those two indices.
 
@@ -73,7 +73,7 @@ class Solution {
 - **Time complexity:** $O(n^2)$. The nested `for` loop takes $O(n^2)$ time complexity.
 - **Space complexity:** $O(1)$. We only declared three integers (`n, i, j`), and don't need any additional space.
 
-### Solution 2: Hash Table
+<h3 id="solution_2">Solution 2: Hash Table</h3>
 
 The nested `for` loop in solution 1 takes a lot of time. Can we reduce the time complexity? Sure we can. We can make use of the data structure Hash Table to store the numbers that we have met. In this problem we are asked to return the _indices_, so we need to store the numbers together with indices, and we can use hashmap to solve the problem. (If we were asked to return two numbers, then we could use a hashset instead.)
 
@@ -134,7 +134,7 @@ class Solution {
 - **Time complexity:** $O(n)$. The `for` loop will iterate `n` elements, and the operations on hashmap (search and insert) takes constant time. So the total time complexity is $O(n)$.
 - **Space complexity:** $O(n)$. The hashmap needs space for `n` elements.
 
-### Solution 3: Sorting and Two Pointers
+<h3 id="solution_3">Solution 3: Sorting and Two Pointers</h3>
 
 The third solution provides a complete new idea to solve this problem. This solution uses two techniques: sorting and two pointers. If we applies sorting first, we will get a sorted array. Then we can use two pointers to find two numbers. (In <Link to="/en/solution/two-sum-ii-input-array-is-sorted">Two Sum II - Input Array Is Sorted</Link>, we can directly use two pointers.)
 
