@@ -27,7 +27,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   nodes.forEach(node => {
     const lang = node.slug.split("/")[0];
     createPage({
-      path: node.slug,
+      path: node.slug.slice(0, -1),
       component: path.resolve(`src/templates/solution-${lang}.js`),
       context: {
         id: node.id,
