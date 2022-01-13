@@ -1,3 +1,5 @@
+import os
+
 problem_number = input("Problem number: ")
 problem_title = input("Problem title: ")
 problem_link = input("Problem link: ")
@@ -58,13 +60,26 @@ followup_body = '''
 
 path = "../solutions/en/solution/"
 slug = problem_link.split("/")[-2]
-extension = ".mdx"
+
+os.mkdir(path + slug)
+
+extension = "/index.mdx"
 filename = path + slug + extension
+
+four_digits = '0' * (4 - len(problem_number)) + problem_number
+code_folder = "../solutions/code/{}. {}".format(four_digits, problem_title)
+os.mkdir(code_folder)
 
 with open(filename, 'w') as f:
     f.write(frontmatter)
     for i in range(solutions):
-        f.write("### Solution " + str(i + 1) + ": ")
+        id = i + 1
+        with open("{}/solution{}.cpp".format(code_folder, id), 'w') as fp:
+          pass
+        with open("{}/solution{}.java".format(code_folder, id), 'w') as fp:
+          pass
+        # f.write("### Solution " + str(i + 1) + ": ")
+        f.write("<h3 id=\"solution_{id}\">Solution {id}: </h3>".format(id=id))
         f.write(solution_body)
     if (hasFollowUp == "y"):
         f.write(followup_body)
