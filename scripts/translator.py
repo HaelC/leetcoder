@@ -1,13 +1,14 @@
 import re
+import os
 
-filename = input("Mdx filename: ")
+folder_name = input("Problem slug: ")
 solution = ""
 
 path_en = "../solutions/en/solution/"
 path_zh = "../solutions/zh/solution/"
-extension = ".mdx"
-full_filename = path_en + filename + extension
-new_filename = path_zh + filename + extension
+extension = "/index.mdx"
+full_filename = path_en + folder_name + extension
+new_filename = path_zh + folder_name + extension
 
 with open(full_filename) as f:
     solution = f.read()
@@ -46,9 +47,13 @@ for word_en, word_zh in word_dict.items():
 solution = solution.replace('leetcode', 'leetcode-cn')
 # can't simply replace 'Solution' with '解法', because
 # there are 'Solution' in the code as well. 
-solution = solution.replace('### Solution', '### 解法')
+# solution = solution.replace('### Solution', '### 解法')
+solution = re.sub(fr'(<h3 id="solution_\d">)Solution \d: ',
+        fr'\1解法：',
+        solution)
 solution = solution.replace('C++ Solution', 'C++解法')
 solution = solution.replace('Java Solution', 'Java解法')
 
+os.mkdir(path_zh + folder_name)
 with open(new_filename, 'w') as f:
     f.write(solution)

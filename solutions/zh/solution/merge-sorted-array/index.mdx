@@ -1,0 +1,225 @@
+---
+number: 88
+title: 合并两个有序数组
+link: https://leetcode-cn.com/problems/merge-sorted-array/
+difficulties: [简单]
+tags: [数组, 排序, 双指针]
+related_problems: []
+---
+
+<h3 id="solution_1">解法一：拼接与排序</h3>
+
+第一种解法非常直接。我们可以拼接两个数组，随后对拼接数组进行排序。该方法适用于任意两个数组，不管它们是否有序。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        for (int i = 0; i < n; i++) {
+            nums1[m + i] = nums2[i];
+        }
+
+        sort(nums1.begin(), nums1.end());
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        for (int i = 0; i < n; i++) {
+            nums1[m + i] = nums2[i];
+        }
+
+        Arrays.sort(nums1);
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O((m+n)\text{log}(m+n))$。拼接操作需要$O(n)$，拼接之后对整个大小为`m + n`的数组排序需要$O((m+n)\text{log}(m+n))$。
+- **空间复杂度：** $O(1)$。我们不需要额外空间。
+
+<h3 id="solution_2">解法二：双指针与辅助数组</h3>
+
+我们可以用双指针以及一个辅助数组来合并两个有序数组。起初两个指针`p1`和`p2`分别指向`nums1`和`nums2`的第一个元素。我们比较`nums1[p1]`和`nums2[p2]`的大小：如果`nums1[p1] <= nums2[p2]`，我们把`nums1[p1]`加到辅助数组，`p1`指针右移；否则我们把`nums2[p2]`加到辅助数组并将`p2`右移。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        vector<int> auxiliary(m + n, 0);
+
+        int p1 = 0, p2 = 0;
+        int i = 0;
+        while (p1 < m && p2 < n) {
+            if (nums1[p1] <= nums2[p2]) {
+                auxiliary[i] = nums1[p1];
+                i++;
+                p1++;
+            }
+            else {
+                auxiliary[i] = nums2[p2];
+                i++;
+                p2++;
+            }
+        }
+
+        while (p1 < m) {
+            auxiliary[i] = nums1[p1];
+            i++;
+            p1++;
+        }
+
+        while (p2 < n) {
+            auxiliary[i] = nums2[p2];
+            i++;
+            p2++;
+        }
+
+        nums1 = auxiliary;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int[] auxiliary = new int[m + n];
+
+        int p1 = 0, p2 = 0, i = 0;
+        while (p1 < m && p2 < n) {
+            if (nums1[p1] <= nums2[p2]) {
+                auxiliary[i] = nums1[p1];
+                i++;
+                p1++;
+            }
+            else {
+                auxiliary[i] = nums2[p2];
+                i++;
+                p2++;
+            }
+        }
+
+        while (p1 < m) {
+            auxiliary[i] = nums1[p1];
+            i++;
+            p1++;
+        }
+
+        while (p2 < n) {
+            auxiliary[i] = nums2[p2];
+            i++;
+            p2++;
+        }
+
+        // we could not directly reassign nums1 = auxiliary
+        for (i = 0; i < m + n; i++) {
+            nums1[i] = auxiliary[i];
+        }
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(m+n)$。遍历`nums1`和`nums2`的每个元素需要$O(m+n)$，复制辅助数组到`nums1`需要$O(m+n)$。
+- **空间复杂度：** $O(m+n)$。我们需要一个大小为`m + n`的辅助数组。
+
+<h3 id="solution_3">解法三：自右开始的双指针</h3>
+
+在解法二中，为了不弄乱原先`nums1`中的元素，我们新建了一个辅助数组。有没有可以不使用额外空间的解决方法呢？答案是有的。
+
+一开始`nums1`中的最后`n`个元素为 0，我们可以充分利用那些空间。我们可以从右边开始，从大到小合并。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int p1 = m - 1, p2 = n - 1;
+        int i = m + n - 1;
+
+        while (p1 >= 0 && p2 >= 0) {
+            if (nums1[p1] >= nums2[p2]) {
+                nums1[i] = nums1[p1];
+                i--;
+                p1--;
+            }
+            else {
+                nums1[i] = nums2[p2];
+                i--;
+                p2--;
+            }
+        }
+
+        while (p2 >= 0) {
+            nums1[i] = nums2[p2];
+            i--;
+            p2--;
+        }
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int p1 = m - 1, p2 = n - 1, i = m + n - 1;
+
+        while (p1 >= 0 && p2 >= 0) {
+            if (nums1[p1] >= nums2[p2]) {
+                nums1[i] = nums1[p1];
+                i--;
+                p1--;
+            }
+            else {
+                nums1[i] = nums2[p2];
+                i--;
+                p2--;
+            }
+        }
+
+        while (p2 >= 0) {
+            nums1[i] = nums2[p2];
+            i--;
+            p2--;
+        }
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(m+n)$。我们遍历`nums1`和`nums2`的每一个元素。
+- **空间复杂度：** $O(1)$。我们仅定义了三个整数变量。
