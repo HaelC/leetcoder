@@ -47,7 +47,6 @@ for word_en, word_zh in word_dict.items():
 solution = solution.replace('leetcode', 'leetcode-cn')
 # can't simply replace 'Solution' with '解法', because
 # there are 'Solution' in the code as well. 
-# solution = solution.replace('### Solution', '### 解法')
 solution = re.sub(fr'(<h3 id="solution_\d">)Solution \d: ',
         fr'\1解法：',
         solution)

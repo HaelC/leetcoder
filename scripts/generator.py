@@ -67,7 +67,7 @@ extension = "/index.mdx"
 filename = path + slug + extension
 
 four_digits = '0' * (4 - len(problem_number)) + problem_number
-code_folder = "../solutions/code/{}. {}".format(four_digits, problem_title)
+code_folder = "../code/{}. {}".format(four_digits, problem_title)
 os.mkdir(code_folder)
 
 with open(filename, 'w') as f:
@@ -78,7 +78,6 @@ with open(filename, 'w') as f:
           pass
         with open("{}/solution{}.java".format(code_folder, id), 'w') as fp:
           pass
-        # f.write("### Solution " + str(i + 1) + ": ")
         f.write("<h3 id=\"solution_{id}\">Solution {id}: </h3>".format(id=id))
         f.write(solution_body)
     if (hasFollowUp == "y"):
