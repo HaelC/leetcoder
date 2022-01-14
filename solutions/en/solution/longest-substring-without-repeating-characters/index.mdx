@@ -7,16 +7,76 @@ tags: [String, Sliding Window, Hash Table]
 related_problems: []
 ---
 
-### Solution 1: Sliding Window
+<h3 id="solution_1">Solution 1: Sliding Window</h3>
 
 We can use sliding window to solve this problem, where the sliding window is the current substring without repeating characters. The sliding window's left side (variable named `begin` in the following code) is initialized as 0; while the right side is in sync with index `i` when iterating the input string.
 
 When iterating the string, we increment `i` (the right side of the sliding window) by 1, which means a new character `c` at index `i` is added to the sliding window. We need to check whether the previous sliding window (from `begin` to `i - 1`) contains the character `c`. If the previous sliding window does not contain `c`, we don't need to update the sliding window's left side; otherwise, we need to move the left side so that the current sliding window will not contain repeating characters `c`.
 
-How do we check if the previous sliding window contains `c`? Well we can check each character from `begin` to `i - 1`. There's a better option with a hash table. We can store the character together with its latest index in a `hashmap`. There are two cases indicating the previous sliding window does not contain `c`:
+How do we check if the previous sliding window contains `c`? We can add a new loop to check each character from `begin` to `i - 1`.
 
-- The hash table does not contain `c`, which means we have never met `c` before.
-- The hash table contains `c`, but `hashmap[c] < begin`, which means that we have met `c` before, but its index is less than `begin`.
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int longest = 0, n = s.length(), begin = 0;
+
+        for (int i = 0; i < n; i++) {
+            char c = s[i];
+            for (int j = begin; j < i; j++) {
+                if (s[j] == c) {
+                    begin = j + 1;
+                }
+            }
+            longest = max(longest, i - begin + 1);
+        }
+
+        return longest;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int longest = 0, n = s.length(), begin = 0;
+
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            for (int j = begin; j < i; j++) {
+                if (s.charAt(j) == c) {
+                    begin = j + 1;
+                }
+            }
+            longest = Math.max(longest, i - begin + 1);
+        }
+
+        return longest;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n^2)$. The nested loop takes $O(n^2)$ time complexity.
+- **Space complexity:** $O(1)$. We only need constant space.
+
+<h3 id="solution_2">Solution 2: Sliding Window with Hash Map</h3>
+
+We can optimize the time complexity with the help of a hash map. We can store the character together with its latest index in a `hashmap`. There are two cases indicating the previous sliding window does not contain `c`:
+
+- The hash map does not contain `c`, which means we have never met `c` before.
+- The hash map contains `c`, but `hashmap[c] < begin`, which means that we have met `c` before, but its index is less than `begin`.
 
 If `hashmap[c] >= begin`, it means that the previous sliding window contains character `c`. We need to move the left side (`begin`) to `hashmap[c] + 1` to exclude the previous `c`.
 

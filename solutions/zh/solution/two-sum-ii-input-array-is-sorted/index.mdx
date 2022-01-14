@@ -1,22 +1,22 @@
 ---
 number: 167
-title: Two Sum II - Input Array Is Sorted
-link: https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
-difficulties: [easy]
-tags: [Array, Two Pointers, Binary Search]
-related_problems: [[Two Sum, two-sum]]
+title: 两数之和 II - 输入有序数组
+link: https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/
+difficulties: [简单]
+tags: [数组, 双指针, 二分查找]
+related_problems: [[两数之和, two-sum]]
 ---
 
 import { Link } from "gatsby";
 
-[Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) is a follow-up of the original [Two Sum problem](https://leetcode.com/problems/two-sum/), adding a condition that the input array is sorted. We can use all <Link to="/en/solution/two-sum">solutions for Two Sum</Link>. Since the input array is sorted, we can solve the problem in different ways.
+[两数之和 II - 输入有序数组](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/) 是原始[两数之和](https://leetcode-cn.com/problems/two-sum/)的后续问题，补充了输入数组为有序数组这一条件。我们可以使用<Link to="/en/solution/two-sum">两数之和的解法</Link>。不过既然输入数组是有序的，我们可以用不同的方法解决这一问题。
 
-### Solution 1: Two Pointers
+<h3 id="solution_1">解法一：双指针</h3>
 
-Two pointers (`p1` and `p2`) will point to two different numbers (`num1` and `num2`). At first, `p1` points to the first element in array, which is the smallest number; and `p2` points to the last element which is the largest. If `num1 + num2 == target`, then we find two numbers whose sum equals `target`; if `num1 + num2 < target`, it means `num1` is a bit small, we can move `p1` to the right so that `num1` will be a bit larger; if `num1 + num2 > target`, then move `p2` to the left to make `num2` smaller. Repeat the process until we find the two numbers.
+两个指针（`p1`和`p2`）分别指向两个不同的数（`num1`和`num2`）。一开始，`p1`指向数组第一个元素即最小的数，而`p2`指向最后一个元素即最大的数。如果`num1 + num2 == target`，那么我们找到了两个数；如果`num1 + num2 < target`，那么`num1`偏小了，我们可以将`p1`指针右移，使`num1`增大一点；如果`num1 + num2 > target`，那么可以将`p2`左移，使`num2`变小一点。重复该过程，直到我们找到两个数之和等于目标数。
 
 <details class="code-details">
-    <summary>C++ Solution</summary>
+    <summary>C++解法</summary>
 
 ```cpp
 class Solution {
@@ -44,7 +44,7 @@ public:
 </details>
 
 <details class="code-details">
-    <summary>Java Solution</summary>
+    <summary>Java解法</summary>
 
 ```java
 class Solution {
@@ -70,19 +70,19 @@ class Solution {
 
 </details>
 
-**Analysis:**
+**分析：**
 
-- **Time complexity:** $O(n)$. The `while` loop will iterate the input array and time complexity is $O(n)$.
-- **Space complexity:** $O(1)$. We only declared necessary integers (two for pointers, and two for numbers), and don't need any additional space.
+- **时间复杂度：** $O(n)$。`while`循环可能会遍历整个输入数组，时间复杂度是$O(n)$.
+- **空间复杂度：** $O(1)$。我们只定义了必要的整形变量（两个指针，以及两个数），不需要额外的空间。
 
-### Solution 2: Binary Search
+<h3 id="solution_2">解法 2：二分查找</h3>
 
-Binary search is often used in sorted array, and this problem can also be solved with binary search.
+在有序数组中经常会用到二分查找，这个问题也可以用二分查找来解决。
 
-We can use a `for` loop to iterate through the input array. For each index `i`, we will use the binary search to find whether the remaining array (from index `i + 1` to `n - 1`, where `n` is the size of the input array) contains an element `target - numbers[i]`.
+我们使用一个`for`循环遍历输入数组。对于每个下标`i`，我们对剩下的数组（下标从`i + 1`到`n - 1`，`n`为输入数组的大小）使用二分查找，查找是否存在元素`target - numbers[i]`。
 
 <details class="code-details">
-    <summary>C++ Solution</summary>
+    <summary>C++解法</summary>
 
 ```cpp
 class Solution {
@@ -116,7 +116,7 @@ public:
 </details>
 
 <details class="code-details">
-    <summary>Java Solution</summary>
+    <summary>Java解法</summary>
 
 ```java
 class Solution {
@@ -148,16 +148,15 @@ class Solution {
 
 </details>
 
-**Analysis:**
+**分析：**
 
-- **Time complexity:** $O(n\text{log}(n))$. The `for` loop will iterate `n` elements, and the binary search in the loop takes $O(\text{log}(n))$. So the total time complexity is $O(n\text{log}(n))$.
-- **Space complexity:** $O(1)$. We only need constant space.
+- **时间复杂度：** $O(n\text{log}(n))$。 `for`循环会遍历`n`个元素，循环内的二分查找需要$O(\text{log}(n))$。因此总的时间复杂度为$O(n\text{log}(n))$。
+- **空间复杂度：** $O(1)$。我们仅需要常数级空间。
 
 <div id="follow-up">
-  <h3>Follow-ups</h3>
+  <h3>后续问题</h3>
   <p>
-    Most of the original{" "}
-    <Link to="/en/solution/two-sum#follow-up">Two Sum's follow-ups</Link> are
-    still applicable.
+    可以参考大部分
+    <Link to="/zh/solution/two-sum#follow-up">两数之和的后续问题</Link>。
   </p>
 </div>

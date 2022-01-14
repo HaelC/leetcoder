@@ -1,0 +1,225 @@
+---
+number: 88
+title: Merge Sorted Array
+link: https://leetcode.com/problems/merge-sorted-array/
+difficulties: [easy]
+tags: [Array, Sorting, Two Pointers]
+related_problems: []
+---
+
+<h3 id="solution_1">Solution 1: Concatenation and Sorting</h3>
+
+The first solution is very straight-forward. We simply concat two arrays and then sort the concatenated array. This solution applies to any two arrays, regardless of whether they are sorted or not.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        for (int i = 0; i < n; i++) {
+            nums1[m + i] = nums2[i];
+        }
+
+        sort(nums1.begin(), nums1.end());
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        for (int i = 0; i < n; i++) {
+            nums1[m + i] = nums2[i];
+        }
+
+        Arrays.sort(nums1);
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O((m+n)\text{log}(m+n))$. The concatenation takes $O(n)$. After the concatenation, the sorting of the entire array (with size `m + n`) takes $O((m+n)\text{log}(m+n))$.
+- **Space complexity:** $O(1)$. We don't create additional space.
+
+<h3 id="solution_2">Solution 2: Two Pointers with an Auxiliary Array</h3>
+
+We can use two pointers and an auxiliary array to merge two sorted arrays. Initially two pointers `p1` and `p2` point to the first element of `nums1` and `nums2`. We compare `nums1[p1]` and `nums2[p2]`: if `nums1[p1] <= nums2[p2]`, we add `nums1[p1]` to the auxiliary array and increment `p1`; otherwise we append `nums2[p2]` and increment `p2`.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        vector<int> auxiliary(m + n, 0);
+
+        int p1 = 0, p2 = 0;
+        int i = 0;
+        while (p1 < m && p2 < n) {
+            if (nums1[p1] <= nums2[p2]) {
+                auxiliary[i] = nums1[p1];
+                i++;
+                p1++;
+            }
+            else {
+                auxiliary[i] = nums2[p2];
+                i++;
+                p2++;
+            }
+        }
+
+        while (p1 < m) {
+            auxiliary[i] = nums1[p1];
+            i++;
+            p1++;
+        }
+
+        while (p2 < n) {
+            auxiliary[i] = nums2[p2];
+            i++;
+            p2++;
+        }
+
+        nums1 = auxiliary;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int[] auxiliary = new int[m + n];
+
+        int p1 = 0, p2 = 0, i = 0;
+        while (p1 < m && p2 < n) {
+            if (nums1[p1] <= nums2[p2]) {
+                auxiliary[i] = nums1[p1];
+                i++;
+                p1++;
+            }
+            else {
+                auxiliary[i] = nums2[p2];
+                i++;
+                p2++;
+            }
+        }
+
+        while (p1 < m) {
+            auxiliary[i] = nums1[p1];
+            i++;
+            p1++;
+        }
+
+        while (p2 < n) {
+            auxiliary[i] = nums2[p2];
+            i++;
+            p2++;
+        }
+
+        // we could not directly reassign nums1 = auxiliary
+        for (i = 0; i < m + n; i++) {
+            nums1[i] = auxiliary[i];
+        }
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(m+n)$. Going through every element in `nums1` and `nums2` takes $O(m+n)$, and copying the auxiliary to `nums1` takes $O(m+n)$.
+- **Space complexity:** $O(m+n)$. We need an auxiliary array with size `m + n`.
+
+<h3 id="solution_3">Solution 3: Two Pointers Starting from Right</h3>
+
+In Solution 2, we need to create an additional auxiliary array, so that we won't mess up the elements in the original `nums1`. Is there a way to solve the problem without additional space? Yes there exists.
+
+Initially the last `n` elements in `nums1` are set to `0`, so we can make use of those spaces. Instead of merging from the smallest, we can start from right and merge from largest to smallest.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int p1 = m - 1, p2 = n - 1;
+        int i = m + n - 1;
+
+        while (p1 >= 0 && p2 >= 0) {
+            if (nums1[p1] >= nums2[p2]) {
+                nums1[i] = nums1[p1];
+                i--;
+                p1--;
+            }
+            else {
+                nums1[i] = nums2[p2];
+                i--;
+                p2--;
+            }
+        }
+
+        while (p2 >= 0) {
+            nums1[i] = nums2[p2];
+            i--;
+            p2--;
+        }
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int p1 = m - 1, p2 = n - 1, i = m + n - 1;
+
+        while (p1 >= 0 && p2 >= 0) {
+            if (nums1[p1] >= nums2[p2]) {
+                nums1[i] = nums1[p1];
+                i--;
+                p1--;
+            }
+            else {
+                nums1[i] = nums2[p2];
+                i--;
+                p2--;
+            }
+        }
+
+        while (p2 >= 0) {
+            nums1[i] = nums2[p2];
+            i--;
+            p2--;
+        }
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(m+n)$. We go through all elements in `nums1` and `nums2`.
+- **Space complexity:** $O(1)$. We only declared three integer variables.

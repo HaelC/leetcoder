@@ -10,7 +10,7 @@ const SolutionsPage = ({ data }) => {
       <ul className="solution-list">
         {data.allMdx.nodes.map(node => (
           <li key={node.id}>
-            <Link to={`/${node.slug}`}>
+            <Link to={`/${node.slug.slice(0, -1)}`}>
               {node.frontmatter.number}. {node.frontmatter.title}
             </Link>
           </li>

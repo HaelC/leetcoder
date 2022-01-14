@@ -7,7 +7,7 @@ tags: [Linked List, Recursion]
 related_problems: []
 ---
 
-### Solution 1: Iterative
+<h3 id="solution_1">Solution 1: Iterative</h3>
 
 Let's think about a linked list with 3 nodes `1->2->3`, after reversing the linked list will be `3->2->1`. Here are the steps:
 
@@ -92,7 +92,7 @@ class Solution {
 - **Time complexity:** $O(n)$. We will iterate through the linked list.
 - **Space complexity:** $O(1)$. We only need constant space.
 
-### Solution 2: Recursion
+<h3 id="solution_2">Solution 2: Recursion</h3>
 
 We can also use recursion to solve the problem.
 
@@ -171,7 +171,7 @@ class Solution {
 - **Time complexity:** $O(n)$. Recursive function will be called `n` times.
 - **Space complexity:** $O(n)$. Recursion takes up $O(n)$ space.
 
-### Solution 3: Additional Data Structure
+<h3 id="solution_3">Solution 3: Additional Data Structure</h3>
 
 When dealing with linked list problems, sometimes we can use some other data structures to make the problem a bit easier. For example, in this problem, we can use an array or a stack (I use stack in the following code) to store the values of the linked list. After getting all the values of the original linked list, we can use these values to create a new linked list with reversed values.
 
@@ -254,4 +254,4 @@ class Solution {
 **Analysis:**
 
 - **Time complexity:** $O(n)$. Storing values in the additional data structure and creating the new linked list both takes $O(n)$ time.
-- **Space complexity:** $O(n)$. Both the additioanl data structure and the newly-created linked list has a size of `n`.
+- **Space complexity:** $O(n)$. Both the additional data structure and the newly-created linked list has a size of `n`.
