@@ -1,0 +1,300 @@
+---
+number: 4
+title: 寻找两个正序数组的中位数
+link: https://leetcode-cn.com/problems/median-of-two-sorted-arrays/
+difficulties: [困难]
+tags: [数组, 二分查找]
+related_problems: []
+---
+
+<h3 id="solution_1">解法一：合并有序数组</h3>
+
+在一个有序数组中找中位数很简单，所以我们可以将两个有序数组合并为一个有序数组，随后便能直接返回中位数。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size(), n = nums2.size();
+        int p1 = 0, p2 = 0, i = 0;
+        vector<int> merged(m + n);
+
+        while (p1 < m && p2 < n) {
+            if (nums1[p1] <= nums2[p2]) {
+                merged[i] = nums1[p1];
+                p1++;
+                i++;
+            }
+            else {
+                merged[i] = nums2[p2];
+                p2++;
+                i++;
+            }
+        }
+
+        while (p1 < m) {
+            merged[i] = nums1[p1];
+            p1++;
+            i++;
+        }
+
+        while (p2 < n) {
+            merged[i] = nums2[p2];
+            p2++;
+            i++;
+        }
+
+        if ((m + n) % 2 == 0) {
+            return (merged[(m + n) / 2 - 1] + merged[(m + n) / 2]) / 2.0;
+        }
+        else {
+            return merged[(m + n) / 2];
+        }
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+        int[] merged = new int[m + n];
+
+        int p1 = 0, p2 = 0, i = 0;
+
+        while (p1 < m && p2 < n) {
+            if (nums1[p1] < nums2[p2]) {
+                merged[i] = nums1[p1];
+                i++;
+                p1++;
+            }
+            else {
+                merged[i] = nums2[p2];
+                i++;
+                p2++;
+            }
+        }
+
+        while (p1 < m) {
+            merged[i] = nums1[p1];
+            i++;
+            p1++;
+        }
+
+        while (p2 < n) {
+            merged[i] = nums2[p2];
+            i++;
+            p2++;
+        }
+
+        if ((m + n) % 2 == 0) {
+            return (merged[(m + n) / 2 - 1] + merged[(m + n) / 2]) / 2.0;
+        }
+        else {
+            return merged[(m + n) / 2];
+        }
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(m+n)$。合并两个有序数组需要$O(m+n)$。
+- **空间复杂度：** $O(m+n)$。我们需要存储大小为`m + n`的合并数组。
+
+<h3 id="solution_2">解法二：二分查找</h3>
+
+问题要求算法的时间复杂度为`O(log (m+n))`。我们也许要考虑如何使用二分查找来解决该问题。
+
+想要找到中位数，我们可以把所有数字分成两组： 较小数`small`和较大数`large`，其中`small`中的所有元素都小于等于`large`中的元素。
+
+- 如果总共有偶数个数（`m + n`为偶数），那么两组数均有`(m + n) / 2`个数，中位数是较小数中的最大数与较大数中的最小数的平均值`(max_in_small_group + min_in_large_group) / 2`。
+- 如果共有奇数个数，则`small`会有`(m + n + 1) / 2`个数，比有`(m + n) / 2`个数的`large`多一个数。中位数为较小数中的最大数`max_in_small_group`。
+
+如何将`nums1`和`nums2`中的数字划分成`small`和`large`两组呢？
+
+假设`nums1`中的数字要少于等于`nums2`（`m <= n`）。`small`可能会包含`nums1`中的前`x`个元素，以及`nums2`中的前`(m + n + 1) / 2 - x`个元素，`x`的值可以为`0,1,...,m`。可以通过二分查找来找出这一`x`。
+
+在下面的代码中，`index1`表示`nums1`中`small`和`large`的边界。其中`nums1[0], nums1[1], ..., nums1[index1 - 1]`属于较小数`small`，`nums1[index1], ..., nums1[m - 1]`属于较大数`large`。与之类似，`nums2[0], nums2[1], ..., nums2[index2 - 1]`属于较小数`small`，`nums2[index2], ..., nums2[n - 1]`属于较大数`large`。
+
+我们要保证`small`中的所有数都小于等于`large`中的数，我们只需要比较四个数：`nums1[index1 - 1], nums1[index1], nums2[index2 - 1], nums2[index2]`。
+
+- 如果`nums1[index1 - 1] > nums2[index2]`，这意味着`index1`偏大，我们将`right`设为`index1 - 1`。
+- 如果`nums2[index2 - 1] > nums1[index1]`，这意味着`index1`偏小，我们将`left`设为`index1 + 1`。
+- 如果两个条件都满足，那么我们已成功将数分为了`small`和`large`两组数。我们可以找较小数中的最大数`max_in_small_group`，以及较大数中的最小数`min_in_large_group`：
+  - 如果`index1 == 0`，这意味着`nums1`中的数都属于较大数`large`。`max_in_small_group`为`nums2[index2 - 1]`；
+  - 如果`index2 == 0`，那么`max_in_small_group`为`nums1[index1 - 1]`；
+  - 如果`index1`和`index2`均不为零，`max_in_small_group`则会是`nums1[index1 - 1]`与`nums2[index2 - 1]`中更大的那个数。
+  - 寻找`min_in_large_group`的过程类似。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size(), n = nums2.size();
+
+        // make sure m <= n
+        if (m > n) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+
+        int left = 0, right = m, halfSize = (m + n + 1) / 2;
+        while (left <= right) {
+            int index1 = (left + right) / 2;
+            int index2 = halfSize - index1;
+            if (index1 > 0 && nums1[index1 - 1] > nums2[index2]) {
+                right = index1 - 1;
+            }
+            else if (index1 < m && nums1[index1] < nums2[index2 - 1]) {
+                left = index1 + 1;
+            }
+            else {
+                int maxSmall, minLarge;
+                if (index1 == 0) {
+                    maxSmall = nums2[index2 - 1];
+                }
+                else if (index2 == 0) {
+                    maxSmall = nums1[index1 - 1];
+                }
+                else {
+                    maxSmall = max(nums1[index1 - 1], nums2[index2 - 1]);
+                }
+
+                if ((m + n) % 2 == 1) {
+                    return maxSmall;
+                }
+
+                if (index1 == m) {
+                    minLarge = nums2[index2];
+                }
+                else if (index2 == n) {
+                    minLarge = nums1[index1];
+                }
+                else {
+                    minLarge = min(nums1[index1], nums2[index2]);
+                }
+
+                return (maxSmall + minLarge) / 2.0;
+            }
+        }
+        return 0.0;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+
+        // make sure m <= n
+        if (m > n) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+
+        int left = 0, right = m, halfSize = (m + n + 1) / 2;
+        while (left <= right) {
+            int index1 = (left + right) / 2;
+            int index2 = halfSize - index1;
+
+            if (index1 > 0 && nums1[index1 - 1] > nums2[index2]) {
+                right = index1 - 1;
+            }
+            else if (index1 < m && nums1[index1] < nums2[index2 - 1]) {
+                left = index1 + 1;
+            }
+            else {
+                int maxSmall, minLarge;
+
+                if (index1 == 0) {
+                    maxSmall = nums2[index2 - 1];
+                }
+                else if (index2 == 0) {
+                    maxSmall = nums1[index1 - 1];
+                }
+                else {
+                    maxSmall = Math.max(nums1[index1 - 1], nums2[index2 - 1]);
+                }
+
+                if ((m + n) % 2 == 1) {
+                    return maxSmall;
+                }
+
+                if (index1 == m) {
+                    minLarge = nums2[index2];
+                }
+                else if (index2 == n) {
+                    minLarge = nums1[index1];
+                }
+                else {
+                    minLarge = Math.min(nums1[index1], nums2[index2]);
+                }
+
+                return (maxSmall + minLarge) / 2.0;
+            }
+        }
+
+        return 0.0;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(\text{log}(\text{min}(m, n)))$。我们对较少元素的数组进行二分查找。
+- **空间复杂度：** $O(1)$。我们仅使用了一些整数变量。
+
+<div id="follow-up">
+  <h3>后续问题</h3>
+  <ul className="follow-up-list">
+    <li>
+      <i>在解法一中，我们是否需要存储合并后的数组？</i>
+      <p>
+        不需要。我们关心的只是中间值，空间复杂度可以优化成O(1)。将合并后数组存储可以使代码更简洁，并且便于理解。
+      </p>
+    </li>
+    <li>
+      <i>在解法二中，为什么要假设m &lt;= n呢？</i>
+      <p>
+        如果<code>nums1</code>
+        中的数更少，我们可以将二分查找的范围设为整个`nums1`的大小。即
+        <code>index1</code>的范围可以从<code>0</code>（<code>nums1</code>
+        中没有元素属于<code>small</code>）到<code>m</code>（<code>nums1</code>
+        中所有元素均属于<code>small</code>）。否则如果<code>nums1</code>中的数比
+        <code>nums2</code>要多，可能会有以下两种情况：
+        <ul>
+          <li>
+            如果<code>nums1</code>中没有元素属于<code>small</code>，
+            <code>nums2</code>可能没有足够的数来组成<code>small</code>。
+          </li>
+          <li>
+            <code>nums1</code>的大小可能大于<code>small</code>
+            的大小，所以我们可能无法将所有<code>nums1</code>的元素加到
+            <code>small</code>中。
+          </li>
+        </ul>
+        因此，假设<code>m &lt;= n</code>可以稍微简化一点问题。
+      </p>
+    </li>
+  </ul>
+</div>

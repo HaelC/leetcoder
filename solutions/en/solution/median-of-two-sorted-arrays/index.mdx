@@ -1,0 +1,305 @@
+---
+number: 4
+title: Median of Two Sorted Arrays
+link: https://leetcode.com/problems/median-of-two-sorted-arrays/
+difficulties: [hard]
+tags: [Array, Binary Search]
+related_problems: []
+---
+
+<h3 id="solution_1">Solution 1: Merge Two Sorted Arrays</h3>
+
+It is easy to find median in a single sorted array, so we can merge two sorted arrays into one array, then directly return the median.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size(), n = nums2.size();
+        int p1 = 0, p2 = 0, i = 0;
+        vector<int> merged(m + n);
+
+        while (p1 < m && p2 < n) {
+            if (nums1[p1] <= nums2[p2]) {
+                merged[i] = nums1[p1];
+                p1++;
+                i++;
+            }
+            else {
+                merged[i] = nums2[p2];
+                p2++;
+                i++;
+            }
+        }
+
+        while (p1 < m) {
+            merged[i] = nums1[p1];
+            p1++;
+            i++;
+        }
+
+        while (p2 < n) {
+            merged[i] = nums2[p2];
+            p2++;
+            i++;
+        }
+
+        if ((m + n) % 2 == 0) {
+            return (merged[(m + n) / 2 - 1] + merged[(m + n) / 2]) / 2.0;
+        }
+        else {
+            return merged[(m + n) / 2];
+        }
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+        int[] merged = new int[m + n];
+
+        int p1 = 0, p2 = 0, i = 0;
+
+        while (p1 < m && p2 < n) {
+            if (nums1[p1] < nums2[p2]) {
+                merged[i] = nums1[p1];
+                i++;
+                p1++;
+            }
+            else {
+                merged[i] = nums2[p2];
+                i++;
+                p2++;
+            }
+        }
+
+        while (p1 < m) {
+            merged[i] = nums1[p1];
+            i++;
+            p1++;
+        }
+
+        while (p2 < n) {
+            merged[i] = nums2[p2];
+            i++;
+            p2++;
+        }
+
+        if ((m + n) % 2 == 0) {
+            return (merged[(m + n) / 2 - 1] + merged[(m + n) / 2]) / 2.0;
+        }
+        else {
+            return merged[(m + n) / 2];
+        }
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(m+n)$. Merging two sorted arrays takes $O(m+n)$.
+- **Space complexity:** $O(m+n)$. We store the merged array which contains `m + n` elements.
+
+<h3 id="solution_2">Solution 2: Binary Search</h3>
+
+The problem requires that the overall runtime complexity should be `O(log (m+n))`. We might need to think of how to apply the binary search to the problem.
+
+If we want to find the median, we could divide all numbers into two groups: `small` and `large`, where all the elements in `small` are less than or equal to those in `large`.
+
+- If there are even numbers in total (`m + n` is even), then both groups have `(m + n) / 2` numbers, and median will be `(max_in_small_group + min_in_large_group) / 2`.
+- If there are odd numbers, `small` will have `(m + n + 1) / 2` numbers and `large` will have `(m + n) / 2` numbers. In this case, `small` has one more element than `large`, and the median is `max_in_small_group`.
+
+How do we divide the numbers in `nums1` and `nums2` into two groups `small` and `large`?
+
+Let's assume that `nums1`'s size is smaller than or equal to `nums2`'s size (`m <= n`). `small` would consist of first `x` elements in `nums1`, and first `(m + n + 1) / 2 - x` elements in `nums2`, where `x` could be `0,1,...,m`. We can use binary search to find the desired `x`.
+
+In the following code, `index1` marks the boundary between `small` and `large` in `nums1`, which means `nums1[0], nums1[1], ..., nums1[index1 - 1]` belong to the `small` group, and `nums1[index1], ..., nums1[m - 1]` belong to the `large` group. Similarly, `nums2[0], nums2[1], ..., nums2[index2 - 1]` belong to the `small` group, and `nums2[index2], ..., nums2[n - 1]` belong to the `large` group.
+
+We want to make sure that all the elements in `small` are smaller than or equal to those in `large`, and we can just compare four numbers: `nums1[index1 - 1], nums1[index1], nums2[index2 - 1], nums2[index2]`.
+
+- If `nums1[index1 - 1] > nums2[index2]`, it means that `index1` is a bit too big, we set `right` as `index1 - 1`.
+- If `nums2[index2 - 1] > nums1[index1]`, it means that `index1` is a bit too small, we set `left` as `index1 + 1`.
+- If both conditions are met, it means that we have successfully divided numbers into `small` and `large` group. Then we can find `max_in_small_group` and `min_in_large_group`:
+  - If `index1 == 0`, it means all elements in `nums1` are in `large` group. `max_in_small_group` would be `nums2[index2 - 1]`;
+  - If `index2 == 0`, it means `max_in_small_group` would be `nums1[index1 - 1]`;
+  - Otherwise, the `max_in_small_group` would be larger element between `nums1[index1 - 1]` and `nums2[index2 - 1]`.
+  - `min_in_large_group` takes a similar process.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size(), n = nums2.size();
+
+        // make sure m <= n
+        if (m > n) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+
+        int left = 0, right = m, halfSize = (m + n + 1) / 2;
+        while (left <= right) {
+            int index1 = (left + right) / 2;
+            int index2 = halfSize - index1;
+            if (index1 > 0 && nums1[index1 - 1] > nums2[index2]) {
+                right = index1 - 1;
+            }
+            else if (index1 < m && nums1[index1] < nums2[index2 - 1]) {
+                left = index1 + 1;
+            }
+            else {
+                int maxSmall, minLarge;
+                if (index1 == 0) {
+                    maxSmall = nums2[index2 - 1];
+                }
+                else if (index2 == 0) {
+                    maxSmall = nums1[index1 - 1];
+                }
+                else {
+                    maxSmall = max(nums1[index1 - 1], nums2[index2 - 1]);
+                }
+
+                if ((m + n) % 2 == 1) {
+                    return maxSmall;
+                }
+
+                if (index1 == m) {
+                    minLarge = nums2[index2];
+                }
+                else if (index2 == n) {
+                    minLarge = nums1[index1];
+                }
+                else {
+                    minLarge = min(nums1[index1], nums2[index2]);
+                }
+
+                return (maxSmall + minLarge) / 2.0;
+            }
+        }
+        return 0.0;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+
+        // make sure m <= n
+        if (m > n) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+
+        int left = 0, right = m, halfSize = (m + n + 1) / 2;
+        while (left <= right) {
+            int index1 = (left + right) / 2;
+            int index2 = halfSize - index1;
+
+            if (index1 > 0 && nums1[index1 - 1] > nums2[index2]) {
+                right = index1 - 1;
+            }
+            else if (index1 < m && nums1[index1] < nums2[index2 - 1]) {
+                left = index1 + 1;
+            }
+            else {
+                int maxSmall, minLarge;
+
+                if (index1 == 0) {
+                    maxSmall = nums2[index2 - 1];
+                }
+                else if (index2 == 0) {
+                    maxSmall = nums1[index1 - 1];
+                }
+                else {
+                    maxSmall = Math.max(nums1[index1 - 1], nums2[index2 - 1]);
+                }
+
+                if ((m + n) % 2 == 1) {
+                    return maxSmall;
+                }
+
+                if (index1 == m) {
+                    minLarge = nums2[index2];
+                }
+                else if (index2 == n) {
+                    minLarge = nums1[index1];
+                }
+                else {
+                    minLarge = Math.min(nums1[index1], nums2[index2]);
+                }
+
+                return (maxSmall + minLarge) / 2.0;
+            }
+        }
+
+        return 0.0;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(\text{log}(\text{min}(m, n)))$. We apply the binary search on the array with smaller size.
+- **Space complexity:** $O(1)$. We only declared some integer variables.
+
+<div id="follow-up">
+  <h3>Follow-ups</h3>
+  <ul className="follow-up-list">
+    <li>
+      <i>In solution 1, do we need to store the complete merged array?</i>
+      <p>
+        No. It's not necessary to store the merged array. We only care about the
+        middile value(s) and the space complexity can be optimized to O(1).
+        Storing the merged array makes the code concise and easy to understand.
+      </p>
+    </li>
+    <li>
+      <i>In solution 2, why do we assume that m &lt;= n?</i>
+      <p>
+        If the size of <code>nums1</code> is smaller, we can set the binary
+        search's range from the beginning to the end, i.e., <code>index1</code>{" "}
+        could range from <code>0</code> (none of the elements in{" "}
+        <code>nums1</code> belongs to <code>small</code>) to <code>m</code> (all
+        of the elements in <code>nums1</code> belong to <code>small</code>).
+        Otherwise if <code>nums1</code> has more elements than{" "}
+        <code>nums2</code>, let's consider the following two situations:
+        <ul>
+          <li>
+            If none of the elements in <code>nums1</code> belongs to{" "}
+            <code>small</code>, there might not be sufficient elements in{" "}
+            <code>nums2</code> to make up the <code>small</code> group.
+          </li>
+          <li>
+            The size of <code>nums1</code> might be greater than the size of{" "}
+            <code>small</code>, so we might not be able to add all elements in{" "}
+            <code>nums1</code> to <code>small</code>.
+          </li>
+        </ul>
+        Therefore, it is easier to make the assumption that{" "}
+        <code>m &lt;= n</code>
+      </p>
+    </li>
+  </ul>
+</div>
