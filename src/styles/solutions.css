@@ -90,3 +90,8 @@
 .code-details:hover {
   cursor: pointer;
 }
+
+.pseudo-code {
+  font-size: large;
+  margin-left: 2rem;
+}

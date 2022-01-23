@@ -1,0 +1,218 @@
+---
+number: 5
+title: 最长回文子串
+link: https://leetcode-cn.com/problems/longest-palindromic-substring/
+difficulties: [中等]
+tags: [字符串, 动态规划]
+related_problems: [[最长回文子序列, longest-palindromic-subsequence]]
+---
+
+<h3 id="solution_1">解法一：动态规划</h3>
+
+我们先来考虑穷举法：
+
+<pre class="pseudo-code">
+  {`longest = ""
+for i = 0 to n - 1:
+  for j = i to n - 1:
+    if isPalindrome(s[i..j]):
+      if (j - i + 1) > longest.length:
+        longest = s[i..j]`}
+</pre>
+
+1. 我们可以用两个下标`i`和`j`来进行一个嵌套的 for 循环。
+2. 我们检查子串`s[i..j]` （表示从`i`到`j`的子串）是否是回文。
+3. 如果`s[i..j]`是回文，且长度大于当前最长子串，则更新最长子串。
+
+穷举法便于理解，但是时间复杂度并不理想：嵌套的 for 循环需要$O(n^2)$，检查子串是否回文需要$O(n)$。总的时间复杂度为$O(n^3)$。
+
+我们可以通过利用一些空间来使算法更高效，换言之我们可以用动态规划也解决这个问题。
+
+我们可以建立一个二维的`dp`，其中`dp[i][j]`用于记录`s[i..j]`是否是回文。
+
+- `dp[i][i]`一直为真。仅包含一个字符的字符串必是回文。
+- `dp[i][i+1]`取决于是否`s[i] == s[i + 1]`。
+- `dp[i][j]` （其中`j > i + 1`）在`s[i] == s[j]`且`dp[i+1][j-1] == true`的情况下为真。
+
+在下面的代码里，我们从长度为`1`和`2`的子串开始，设置`dp`的基础值。随后我们通过一个嵌套的 for 循环，检查长度`3`到`n`。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int n = s.length();
+        vector<vector<bool>> dp(n, vector<bool>(n, false));
+
+        // length == 1
+        string longest = s.substr(0, 1);
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = true;
+        }
+
+        // length == 2
+        for (int i = 0; i < n - 1; i++) {
+            if (s[i] == s[i + 1]) {
+                dp[i][i + 1] = true;
+                if (longest.length() == 1) {
+                    longest = s.substr(i, 2);
+                }
+            }
+        }
+
+        // length == 3 to n
+        for (int len = 3; len <= n; len++) {
+            for (int i = 0; i < n - len + 1; i++) {
+                int j = i + len - 1;
+                if (s[i] == s[j] && dp[i+1][j-1]) {
+                    dp[i][j] = true;
+                    if (longest.length() < len) {
+                        longest = s.substr(i, len);
+                    }
+                }
+            }
+        }
+
+        return longest;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public String longestPalindrome(String s) {
+        int n = s.length();
+
+        boolean[][] dp = new boolean[n][n];
+
+        // length == 1
+        String longest = s.substring(0, 1);
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = true;
+        }
+
+        // length == 2
+        for (int i = 0; i < n - 1; i++) {
+            if (s.charAt(i) == s.charAt(i + 1)) {
+                dp[i][i + 1] = true;
+                if (longest.length() == 1) {
+                    longest = s.substring(i, i + 2);
+                }
+            }
+        }
+
+        // length == 3 to n
+        for (int len = 3; len <= n; len++) {
+            for (int i = 0; i < n - len + 1; i++) {
+                int j = i + len - 1;
+                if (s.charAt(i) == s.charAt(j) && dp[i+1][j-1]) {
+                    dp[i][j] = true;
+                    if (len > longest.length()) {
+                        longest = s.substring(i, j + 1);
+                    }
+                }
+            }
+        }
+
+        return longest;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2)$。我们检查所有可能的子串，需要$O(n^2)$。
+- **空间复杂度：** $O(n^2)$。`dp`表需要$O(n^2)$的空间。
+
+<h3 id="solution_2">解法二：回文扩展</h3>
+
+如果`s[i..j]`是回文，并且`s[i-1]==s[j+1]`，那么`s[(i-1)..(j+1)]`也是回文。因此给定一个回文，我们可以“扩展”并得到一个更长的回文。我们可以从最短的回文（包含一个或两个字符），尝试扩展回文，并找到最长回文。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+private:
+    void expand(string& s, int i, int j, string& longest) {
+        int n = s.length();
+        while (i > 0 && j < n - 1 && s[i - 1] == s[j + 1]) {
+            i--;
+            j++;
+        }
+
+        int len = j - i + 1;
+        if (len > longest.length()) {
+            longest = s.substr(i, len);
+        }
+    }
+
+public:
+    string longestPalindrome(string s) {
+        string longest = "";
+        int n = s.length();
+
+        for (int i = 0; i < n; i++) {
+            expand(s, i, i, longest);
+            if (i < n - 1 && s[i] == s[i + 1]) {
+                expand(s, i, i + 1, longest);
+            }
+        }
+
+        return longest;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    private String longest = "";
+
+    private void expand(String s, int i, int j) {
+        int n = s.length();
+
+        while (i > 0 && j < n - 1 && s.charAt(i - 1) == s.charAt(j + 1)) {
+            i--;
+            j++;
+        }
+
+        int len = j - i + 1;
+        if (len > longest.length()) {
+            longest = s.substring(i, j + 1);
+        }
+    }
+
+    public String longestPalindrome(String s) {
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            expand(s, i, i);
+            if (i < n - 1 && s.charAt(i) == s.charAt(i + 1)) {
+                expand(s, i, i + 1);
+            }
+        }
+
+        return longest;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2)$。`expand`需要$O(n)$，我们需要扩展$2n-1$次。时间复杂度为$O(n^2)$。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。
