@@ -1,0 +1,106 @@
+---
+number: 6
+title: Z字形变换
+link: https://leetcode-cn.com/problems/zigzag-conversion/
+difficulties: [中等]
+tags: [字符串]
+related_problems: []
+---
+
+<h3 id="solution_1">解法一：Z字形变换</h3>
+
+如果 Z 字形变换的字符串是以下格式（像字母'W'一样），也许可以更容易地想出解法。
+
+<pre class="pseudo-code">
+  {`P     I     N
+ A   L S   I G
+  Y A   H R
+   P     I
+`}
+</pre>
+
+我们可以建立一个字符串数组。对字符串`s`中的每一个字符，我们要么将其加到当前第`i`行。随后我们根据方向将`i`移动至下一行或者上一行。如果`i`到了最后一行，那么上移；如果`i`到了第一行，那么下移。在 for 循环之后，我们将字符串拼接便得到了结果。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        // a special case if numRos == 1
+        if (numRows == 1) {
+            return s;
+        }
+
+        vector<string> zigzag(numRows, "");
+        int i = 0;
+        int dir = 1;
+
+        for (char c : s) {
+            zigzag[i] += c;
+            if (i == numRows - 1) {
+                dir = -1;
+            }
+            else if (i == 0) {
+                dir = 1;
+            }
+            i += dir;
+        }
+
+        string result = "";
+        for (auto row : zigzag) {
+            result += row;
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public String convert(String s, int numRows) {
+        // a special case if numRos == 1
+        if (numRows == 1) {
+            return s;
+        }
+
+        String[] zigzag = new String[numRows];
+        Arrays.fill(zigzag, "");
+
+        int dir = 1, i = 0;
+
+        for (char c : s.toCharArray()) {
+            zigzag[i] += c;
+            if (i == numRows - 1) {
+                dir = -1;
+            }
+            else if (i == 0) {
+                dir = 1;
+            }
+            i += dir;
+        }
+
+        String result = "";
+
+        for (String row : zigzag) {
+            result += row;
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(\text{max}(n, numRows))$。遍历输入字符串需要$O(n)$，拼接需要$O(numRows)$。
+- **空间复杂度：** $O(\text{max}(n, numRows))$。我们建立了一个大小为`numRows`的数组，存放`n`个字符。

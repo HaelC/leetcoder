@@ -12,7 +12,7 @@ class Solution {
 private:
     ListNode* addTwoNumbersHelper(ListNode* l1, ListNode* l2, int carry) {
         if (!l1 && !l2 && !carry) {
-            return NULL;
+            return nullptr;
         }
 
         int sum = carry;

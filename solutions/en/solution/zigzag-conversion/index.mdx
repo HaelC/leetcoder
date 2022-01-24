@@ -1,0 +1,106 @@
+---
+number: 6
+title: Zigzag Conversion
+link: https://leetcode.com/problems/zigzag-conversion/
+difficulties: [medium]
+tags: [String]
+related_problems: []
+---
+
+<h3 id="solution_1">Solution 1: Zigzag</h3>
+
+It might be easier to come up with a solution if the zigzagged string is formatted as follows (looks like a letter 'W'):
+
+<pre class="pseudo-code">
+  {`P     I     N
+ A   L S   I G
+  Y A   H R
+   P     I
+`}
+</pre>
+
+We can create an array of string. For each character in string `s`, we add it to the current row `i`. Then we move `i` to the next row or previous row based on the direction. If `i` reaches the last row, then move up; if `i` reaches the first row, then move down. After the for loop, we concat all the strings together to get the result.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        // a special case if numRos == 1
+        if (numRows == 1) {
+            return s;
+        }
+
+        vector<string> zigzag(numRows, "");
+        int i = 0;
+        int dir = 1;
+
+        for (char c : s) {
+            zigzag[i] += c;
+            if (i == numRows - 1) {
+                dir = -1;
+            }
+            else if (i == 0) {
+                dir = 1;
+            }
+            i += dir;
+        }
+
+        string result = "";
+        for (auto row : zigzag) {
+            result += row;
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public String convert(String s, int numRows) {
+        // a special case if numRos == 1
+        if (numRows == 1) {
+            return s;
+        }
+
+        String[] zigzag = new String[numRows];
+        Arrays.fill(zigzag, "");
+
+        int dir = 1, i = 0;
+
+        for (char c : s.toCharArray()) {
+            zigzag[i] += c;
+            if (i == numRows - 1) {
+                dir = -1;
+            }
+            else if (i == 0) {
+                dir = 1;
+            }
+            i += dir;
+        }
+
+        String result = "";
+
+        for (String row : zigzag) {
+            result += row;
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(\text{max}(n, numRows))$. Iterating the input string takes $O(n)$, and concatenation takes $O(numRows)$.
+- **Space complexity:** $O(\text{max}(n, numRows))$. We create an array with `numRows` size to store `n` characters.

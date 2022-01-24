@@ -22,6 +22,6 @@ private:
 
 public:
     ListNode* reverseList(ListNode* head) {
-        return reverseListHelper(head, NULL);
+        return reverseListHelper(head, nullptr);
     }
 };

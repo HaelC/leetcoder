@@ -1,0 +1,147 @@
+---
+number: 7
+title: 整数反转
+link: https://leetcode-cn.com/problems/reverse-integer/
+difficulties: [中等]
+tags: [数学]
+related_problems: []
+---
+
+<h3 id="solution_1">解法一：使用long类型</h3>
+
+虽然题目要求“假设环境不允许存储 64 位整数（有符号或无符号）”，我们可以先想一个使用 long 类型的解法，之后在解法二中可以优化解法，不再使用 long 类型。
+
+如何反转整数？我们自右（最低位）向左（最高位）获取输入整数的每一位，然后自左向右重建反转后的整数。
+
+反转后的整数可能会超过 int 的范围。比如`x = 1999999999`，反转后的数字超过了 int 的最大值。作为临时手段，我们可以用 long 来存储反转后的数。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int reverse(int x) {
+        long reversed = 0;
+
+        while (x != 0) {
+            int digit = x % 10;
+            x /= 10;
+            reversed = reversed * 10 + digit;
+        }
+
+        if (reversed > INT_MAX || reversed < INT_MIN) {
+            return 0;
+        }
+        else {
+            return reversed;
+        }
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int reverse(int x) {
+        long reversed = 0;
+
+        while (x != 0) {
+            int digit = x % 10;
+            x /= 10;
+            reversed = reversed * 10 + digit;
+        }
+
+        if (reversed > Integer.MAX_VALUE || reversed < Integer.MIN_VALUE) {
+            return 0;
+        }
+        else {
+            return (int)reversed;
+        }
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(\text{log}_{10}(n))$。我们获取每一位数需要$O(\text{log}_{10}(n))$。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。
+
+<h3 id="solution_2">解法二：不使用long类型</h3>
+
+使用 long 类型简化了问题。如何在不使用 long 类型的情况下解决问题呢？
+
+在我们把最新的一位数`digit`加到反转后的数`reversed`之前，我们需要确保数字依然在整数范围内不会溢出，即`INT_MIN <= reversed * 10 + digit <= INT_MAX`。有四种情况可能会带来溢出：
+
+- `reversed < INT_MIN / 10`
+- `reversed > INT_MAX / 10`
+- `reversed == INT_MIN / 10` 且 `digit < -8`
+- `reversed == INT_MAX / 10` 且 `digit > 7`
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int reverse(int x) {
+        int reversed = 0;
+
+        while (x != 0) {
+            int digit = x % 10;
+            x /= 10;
+            if (reversed > INT_MAX / 10 || (reversed == INT_MAX / 10 && digit > 7)) {
+                return 0;
+            }
+            if (reversed < INT_MIN / 10 || (reversed == INT_MIN / 10 && digit < -8)) {
+                return 0;
+            }
+            reversed = reversed * 10 + digit;
+        }
+
+        return reversed;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int reverse(int x) {
+        int reversed = 0;
+
+        while (x != 0) {
+            int digit = x % 10;
+            x /= 10;
+            if (reversed > Integer.MAX_VALUE / 10 ||
+                (reversed == Integer.MAX_VALUE / 10 && digit > 7)) {
+                return 0;
+            }
+            if (reversed < Integer.MIN_VALUE / 10 ||
+                (reversed == Integer.MIN_VALUE / 10 && digit < -8)) {
+                return 0;
+            }
+            reversed = reversed * 10 + digit;
+        }
+
+        return reversed;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(\text{log}_{10}(n))$。我们获取每一位数需要$O(\text{log}_{10}(n))$。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。

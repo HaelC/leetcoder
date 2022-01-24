@@ -23,7 +23,7 @@ const SolutionsPage = ({ data }) => {
 export const query = graphql`
   query {
     allMdx(
-      filter: { slug: { regex: "/en/" } }
+      filter: { slug: { regex: "/^en/" } }
       sort: { fields: frontmatter___number, order: ASC }
     ) {
       nodes {
