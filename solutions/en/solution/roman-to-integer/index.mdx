@@ -1,0 +1,113 @@
+---
+number: 13
+title: Roman to Integer
+link: https://leetcode.com/problems/roman-to-integer/
+difficulties: [easy]
+tags: [String, Math, Hash Table]
+related_problems: [[Integer to Roman, integer-to-roman]]
+---
+
+import { Link } from "gatsby";
+
+<h3 id="solution_1">Solution 1: Hash Table</h3>
+
+Similar to <Link to="/en/solution/integer-to-roman">Integer to Roman</Link>, we can create a symbol-value table.
+
+| Symbol | Value |
+| ------ | ----- |
+| M      | 1000  |
+| CM     | 900   |
+| D      | 500   |
+| CD     | 400   |
+| C      | 100   |
+| XC     | 90    |
+| L      | 50    |
+| XL     | 40    |
+| X      | 10    |
+| IX     | 9     |
+| V      | 5     |
+| IV     | 4     |
+| I      | 1     |
+
+When we are iterating the input string with index `i`, we first check whether `s[i] + s[i+1]` is a valid symbol
+
+- if so, look up `s[i] + s[i+1]` and add the value to result, then add `i` by 2
+- if not, look up `s[i]` and add the value, then add `i` by 1
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    int romanToInt(string s) {
+        unordered_map<string, int> symbolValues{
+            {"M", 1000}, {"CM", 900}, {"D", 500}, {"CD", 400}, {"C", 100}, {"XC", 90},
+            {"L", 50}, {"XL", 40}, {"X", 10}, {"IX", 9}, {"V", 5}, {"IV", 4}, {"I", 1}
+        };
+
+        int n = s.length();
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (i < n - 1 && symbolValues.count(s.substr(i, 2)) > 0) {
+                result += symbolValues[s.substr(i, 2)];
+                i++;
+            }
+            else {
+                result += symbolValues[s.substr(i, 1)];
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int romanToInt(String s) {
+        Map<String, Integer> symbolValues = new HashMap<>();
+        symbolValues.put("M", 1000);
+        symbolValues.put("CM", 900);
+        symbolValues.put("D", 500);
+        symbolValues.put("CD", 400);
+        symbolValues.put("C", 100);
+        symbolValues.put("XC", 90);
+        symbolValues.put("L", 50);
+        symbolValues.put("XL", 40);
+        symbolValues.put("X", 10);
+        symbolValues.put("IX", 9);
+        symbolValues.put("V", 5);
+        symbolValues.put("IV", 4);
+        symbolValues.put("I", 1);
+
+        int n = s.length();
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (i < n - 1 && symbolValues.containsKey(s.substring(i, i + 2))) {
+                result += symbolValues.get(s.substring(i, i + 2));
+                i++;
+            }
+            else {
+                result += symbolValues.get(s.substring(i, i + 1));
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n)$. We iterate through all characters of the input string. Since <code>s</code> has a small range, we can think of the time complexity as $O(1)$ as well.
+- **Space complexity:** $O(1)$. The hash table takes up fixed space.

@@ -1,0 +1,113 @@
+---
+number: 13
+title: 罗马数字转整数
+link: https://leetcode-cn.com/problems/roman-to-integer/
+difficulties: [简单]
+tags: [字符串, 数学, 哈希表]
+related_problems: [[整数转罗马数字, integer-to-roman]]
+---
+
+import { Link } from "gatsby";
+
+<h3 id="solution_1">解法一：哈希表</h3>
+
+与<Link to="/en/solution/integer-to-roman">整数转罗马数字</Link>类似，我们可以建立一个字符-数值表。
+
+| 符号 | 数值 |
+| ---- | ---- |
+| M    | 1000 |
+| CM   | 900  |
+| D    | 500  |
+| CD   | 400  |
+| C    | 100  |
+| XC   | 90   |
+| L    | 50   |
+| XL   | 40   |
+| X    | 10   |
+| IX   | 9    |
+| V    | 5    |
+| IV   | 4    |
+| I    | 1    |
+
+在用下标`i`遍历输入字符串时，我们先检查`s[i] + s[i+1]`是否是一个有效符号：
+
+- 如果是，查找`s[i] + s[i+1]`的值并加到结果中，`i`加 2
+- 如果不是，查找`s[i]`的值并加到结果中，`i`加 1
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int romanToInt(string s) {
+        unordered_map<string, int> symbolValues{
+            {"M", 1000}, {"CM", 900}, {"D", 500}, {"CD", 400}, {"C", 100}, {"XC", 90},
+            {"L", 50}, {"XL", 40}, {"X", 10}, {"IX", 9}, {"V", 5}, {"IV", 4}, {"I", 1}
+        };
+
+        int n = s.length();
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (i < n - 1 && symbolValues.count(s.substr(i, 2)) > 0) {
+                result += symbolValues[s.substr(i, 2)];
+                i++;
+            }
+            else {
+                result += symbolValues[s.substr(i, 1)];
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int romanToInt(String s) {
+        Map<String, Integer> symbolValues = new HashMap<>();
+        symbolValues.put("M", 1000);
+        symbolValues.put("CM", 900);
+        symbolValues.put("D", 500);
+        symbolValues.put("CD", 400);
+        symbolValues.put("C", 100);
+        symbolValues.put("XC", 90);
+        symbolValues.put("L", 50);
+        symbolValues.put("XL", 40);
+        symbolValues.put("X", 10);
+        symbolValues.put("IX", 9);
+        symbolValues.put("V", 5);
+        symbolValues.put("IV", 4);
+        symbolValues.put("I", 1);
+
+        int n = s.length();
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (i < n - 1 && symbolValues.containsKey(s.substring(i, i + 2))) {
+                result += symbolValues.get(s.substring(i, i + 2));
+                i++;
+            }
+            else {
+                result += symbolValues.get(s.substring(i, i + 1));
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n)$。我们遍历输入字符串的所有字符。因为<code>s</code>的范围较小，我们也可以认为时间复杂度为$O(1)$。
+- **空间复杂度：** $O(1)$。哈希表占据的空间是固定的。

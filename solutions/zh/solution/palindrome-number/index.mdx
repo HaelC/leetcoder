@@ -1,0 +1,126 @@
+---
+number: 9
+title: 回文数
+link: https://leetcode-cn.com/problems/palindrome-number/
+difficulties: [简单]
+tags: [字符串, 数学]
+related_problems: [[反转整数, reverse-integer]]
+---
+
+<h3 id="solution_1">解法一：转换字符串</h3>
+
+判断一个字符串是否为回文更容易一点，因此我们可以把输入的数字转换为字符串，再判断其是否为回文。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        string s = to_string(x);
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s[left] != s[right]) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public boolean isPalindrome(int x) {
+        String s = Integer.toString(x);
+
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(\text{log}_{10}(n))$。将整数转换为字符串需要$O(\text{log}_{10}(n))$，检查回文也需要$O(\text{log}_{10}(n))$。
+- **空间复杂度：** $O(\text{log}_{10}(n))$。转换字符串需要存储一定的空间。
+
+<h3 id="solution_2">解法二：反转整数</h3>
+
+如果一个整数为回文数，那就意味着它一定非负（如果包含了负号，那不可能是回文），并且它的反转数等于它自身。我们可以反转整数，来检查其是否相等。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x < 0) {
+            return false;
+        }
+
+        long reversed = 0;
+        int temp = x;
+        while (temp > 0) {
+            int digit = temp % 10;
+            temp /= 10;
+            reversed = reversed * 10 + digit;
+        }
+
+        return x == reversed;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public boolean isPalindrome(int x) {
+        if (x < 0) {
+            return false;
+        }
+
+        long reversed = 0;
+        int temp = x;
+
+        while (temp > 0) {
+            int digit = temp % 10;
+            temp /= 10;
+            reversed = reversed * 10 + digit;
+        }
+
+        return reversed == x;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(\text{log}_{10}(n))$。反转整数需要$O(\text{log}_{10}(n))$。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。

@@ -1,6 +1,5 @@
 class Solution {
     public String convert(String s, int numRows) {
-        // a special case if numRos == 1
         if (numRows == 1) {
             return s;
         }
@@ -21,12 +20,12 @@ class Solution {
             i += dir;
         }
         
-        String result = "";
+        StringBuilder sb = new StringBuilder();
         
         for (String row : zigzag) {
-            result += row;
+            sb.append(row);
         }
         
-        return result;
+        return sb.toString();
     }
 }

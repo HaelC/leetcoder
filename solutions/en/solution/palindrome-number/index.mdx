@@ -1,0 +1,126 @@
+---
+number: 9
+title: Palindrome Number
+link: https://leetcode.com/problems/palindrome-number/
+difficulties: [easy]
+tags: [String, Math]
+related_problems: [[Reverse Integer, reverse-integer]]
+---
+
+<h3 id="solution_1">Solution 1: Converting to String</h3>
+
+It's easier to check whether a string is a palindrome or not. Thus we can conver the input number to string, then check if it's palindromic.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        string s = to_string(x);
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s[left] != s[right]) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public boolean isPalindrome(int x) {
+        String s = Integer.toString(x);
+
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(\text{log}_{10}(n))$. Converting the integer to string takes $O(\text{log}_{10}(n))$, and checking palindrome also takes $O(\text{log}_{10}(n))$.
+- **Space complexity:** $O(\text{log}_{10}(n))$. String conversion takes up some space.
+
+<h3 id="solution_2">Solution 2: Reversing Integer</h3>
+
+If an integer is palindrome, it means that it must be non-negative (if it contains a minus sign, it cannot be palindrome), and it's reversion equals to itself. We can reverse the integer to see whether they are equal.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x < 0) {
+            return false;
+        }
+
+        long reversed = 0;
+        int temp = x;
+        while (temp > 0) {
+            int digit = temp % 10;
+            temp /= 10;
+            reversed = reversed * 10 + digit;
+        }
+
+        return x == reversed;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public boolean isPalindrome(int x) {
+        if (x < 0) {
+            return false;
+        }
+
+        long reversed = 0;
+        int temp = x;
+
+        while (temp > 0) {
+            int digit = temp % 10;
+            temp /= 10;
+            reversed = reversed * 10 + digit;
+        }
+
+        return reversed == x;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(\text{log}_{10}(n))$. Rerversing the integer takes $O(\text{log}_{10}(n))$.
+- **Space complexity:** $O(1)$. We only need constant space.

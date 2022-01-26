@@ -1,0 +1,98 @@
+---
+number: 12
+title: 整数转罗马数字
+link: https://leetcode-cn.com/problems/integer-to-roman/
+difficulties: [简单]
+tags: [字符串, 数学]
+related_problems: [[罗马数字转整数, roman-to-integer]]
+---
+
+<h3 id="solution_1">解法一：查表</h3>
+
+我们可以建立一个整数-罗马数字的数值-符号表：
+
+| 数值 | 符号 |
+| ---- | ---- |
+| 1000 | M    |
+| 900  | CM   |
+| 500  | D    |
+| 400  | CD   |
+| 100  | C    |
+| 90   | XC   |
+| 50   | L    |
+| 40   | XL   |
+| 10   | X    |
+| 9    | IX   |
+| 5    | V    |
+| 4    | IV   |
+| 1    | I    |
+
+从最大的数值`1000`开始，我们可以用一个 for 循环来遍历表格。对于每一个数值-符号对（`value-symbol`），如果`num >= value`，我们可以将`num`减掉`value`，并将`symbol`加到我们的`roman`字符串上。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    string intToRoman(int num) {
+        string roman = "";
+
+        vector<int> values{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        vector<string> symbols{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+        for (int i = 0; i < values.size(); i++) {
+            int value = values[i];
+            string symbol = symbols[i];
+            while (num >= value) {
+                num -= value;
+                roman += symbol;
+            }
+
+            if (num == 0) {
+                break;
+            }
+        }
+
+        return roman;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public String intToRoman(int num) {
+        int[] values = new int[]{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] symbols = new String[]{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < values.length; i++) {
+            int value = values[i];
+            String symbol = symbols[i];
+            while (num >= value) {
+                num -= value;
+                sb.append(symbol);
+            }
+
+            if (num == 0) {
+                break;
+            }
+        }
+
+        return sb.toString();
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n)$。如果输入数字很大，第一个 while 循环将要执行<code>n / 1000</code>次，时间复杂度为$O(n)$。不过在这个问题中，输入数字<code>num</code>的范围很小 <code>1 &lt;= num &lt;= 3999</code>，我们也可以认为时间复杂度为$O(1)$。
+- **空间复杂度：** $O(1)$。数值-符号表的大小是固定的。

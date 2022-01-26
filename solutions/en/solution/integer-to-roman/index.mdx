@@ -1,0 +1,98 @@
+---
+number: 12
+title: Integer to Roman
+link: https://leetcode.com/problems/integer-to-roman/
+difficulties: [easy]
+tags: [String, Math]
+related_problems: [[Roman to Integer, roman-to-integer]]
+---
+
+<h3 id="solution_1">Solution 1: Look-up Table</h3>
+
+We can create an integer-roman table like follows:
+
+| Value | Symbol |
+| ----- | ------ |
+| 1000  | M      |
+| 900   | CM     |
+| 500   | D      |
+| 400   | CD     |
+| 100   | C      |
+| 90    | XC     |
+| 50    | L      |
+| 40    | XL     |
+| 10    | X      |
+| 9     | IX     |
+| 5     | V      |
+| 4     | IV     |
+| 1     | I      |
+
+Starting from the largest value `1000`, we can use a for loop to iterate the table. For each value-symbol pair, if `num >= value`, we can subtract `num` by `value`, and add `symbol` to our `roman` result.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    string intToRoman(int num) {
+        string roman = "";
+
+        vector<int> values{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        vector<string> symbols{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+        for (int i = 0; i < values.size(); i++) {
+            int value = values[i];
+            string symbol = symbols[i];
+            while (num >= value) {
+                num -= value;
+                roman += symbol;
+            }
+
+            if (num == 0) {
+                break;
+            }
+        }
+
+        return roman;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public String intToRoman(int num) {
+        int[] values = new int[]{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] symbols = new String[]{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < values.length; i++) {
+            int value = values[i];
+            String symbol = symbols[i];
+            while (num >= value) {
+                num -= value;
+                sb.append(symbol);
+            }
+
+            if (num == 0) {
+                break;
+            }
+        }
+
+        return sb.toString();
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n)$. If the input is very large, the first while loop will take <code>n / 1000</code> times and the time complexity is $O(n)$. However, in this problem, the input <code>num</code> has a small range <code>1 &lt;= num &lt;= 3999</code>, so we can think of time complexity as $O(1)$ as well.
+- **Space complexity:** $O(1)$. The value-symbol table has a fixed size.
