@@ -1,0 +1,284 @@
+---
+number: 10
+title: Regular Expression Matching
+link: https://leetcode.com/problems/regular-expression-matching/
+difficulties: [hard]
+tags: [String, Recursion, Dynamic Programming]
+related_problems: []
+---
+
+import RegularExpressionMatchingEn from "./follow-up.js";
+
+<h3 id="solution_1">Solution 1: Recursion</h3>
+
+We can solve this regular expression matching with recursion.
+
+Let's start with an easier case, where the pattern `p` only contains lowercase English letters and `.`:
+
+The base case is when `p` is empty, `s` should be empty as well.
+
+If both the input string and pattern are non-empty, we check the first character of both strings. If the first letter of `s` equals that of `p` (`s[0] == p[0]`), or the first character of `p` is `.` (`p[0] == '.'`), then the first letters are match. We recursively check `s[1..]` and `p[1..]`
+
+The algorithm is as follows:
+
+<pre class="pseudo-code">
+  {`function isMatch(s, p):
+    if (p is empty):
+        return (s is empty)
+    
+    return (s[0] == p[0] OR p[0] == '.') AND isMatch(s[1..], p[1..])`}
+</pre>
+
+Now let's consider the more complicated cases with kleene star `*`:
+
+If the pattern looks like `p = a*...` and `p` matches `s`, it means that either
+
+- the first letter of input string `s` is `a`, and `p` matches `s[1..]`,
+- or `s` does not start with `a`, pattern `p[2..]` should match `s`.
+
+The overall algorithm is as follows:
+
+<pre class="pseudo-code">
+  {`function isMatch(s, p):
+    if (p is empty):
+        return (s is empty)
+
+    if (p[1] == '*'):
+        return isMatch(s, p[2..]) OR 
+                ((s[0] == p[0] OR p[0] == '.') AND isMatch(s[1..], p))
+    else:
+        return (s[0] == p[0] OR p[0] == '.') AND isMatch(s[1..], p[1..])
+`}
+</pre>
+
+Pure recursion is time and space consuming. We could optimize the algorithm with memoization. During the recursion process, if we have met `s` and `p`, we don't need to call the recursive function again. Instead, we could look up the result in a hash table.
+
+<details class="code-details">
+    <summary>C++ Solution without Memoization</summary>
+
+```cpp
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        if (p.empty()) {
+            return s.empty();
+        }
+
+        bool matchFirst = !s.empty() && (p[0] == '.' || p[0] == s[0]);
+
+        if (p.length() > 1 && p[1] == '*') {
+            return (isMatch(s, p.substr(2)) || (matchFirst && isMatch(s.substr(1), p)));
+        }
+        else {
+            return (matchFirst && isMatch(s.substr(1), p.substr(1)));
+        }
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>C++ Solution with Memoization</summary>
+
+```cpp
+class Solution {
+private:
+    unordered_map<string, unordered_map<string, bool>> hashmap;
+
+public:
+    bool isMatch(string s, string p) {
+        if (p.empty()) {
+            return s.empty();
+        }
+
+        if (hashmap.count(s) > 0 && hashmap[s].count(p) > 0) {
+            return hashmap[s][p];
+        }
+
+        bool matchFirst = !s.empty() && (p[0] == '.' || p[0] == s[0]);
+        bool result;
+
+        if (p.length() > 1 && p[1] == '*') {
+            result = (isMatch(s, p.substr(2)) || (matchFirst && isMatch(s.substr(1), p)));
+        }
+        else {
+            result = (matchFirst && isMatch(s.substr(1), p.substr(1)));
+        }
+
+        hashmap[s][p] = result;
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution without Memoization</summary>
+
+```java
+class Solution {
+    public boolean isMatch(String s, String p) {
+        if (p.isEmpty()) {
+            return s.isEmpty();
+        }
+
+        boolean matchFirst = !s.isEmpty() && (s.charAt(0) == p.charAt(0) || p.charAt(0) == '.');
+
+        if (p.length() > 1 && p.charAt(1) == '*') {
+            return isMatch(s, p.substring(2)) || (matchFirst && (isMatch(s.substring(1), p)));
+        }
+        else {
+            return matchFirst && isMatch(s.substring(1), p.substring(1));
+        }
+    }
+}
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution with Memoization</summary>
+
+```java
+class Solution {
+    private Map<String, Map<String, Boolean>> hashmap = new HashMap<>();
+
+    public boolean isMatch(String s, String p) {
+        if (p.isEmpty()) {
+            return s.isEmpty();
+        }
+
+        if (hashmap.containsKey(s) && hashmap.get(s).containsKey(p)) {
+            return hashmap.get(s).get(p);
+        }
+
+        boolean matchFirst = !s.isEmpty() && (s.charAt(0) == p.charAt(0) || p.charAt(0) == '.');
+        boolean result;
+
+        if (p.length() > 1 && p.charAt(1) == '*') {
+            result = isMatch(s, p.substring(2)) || (matchFirst && (isMatch(s.substring(1), p)));
+        }
+        else {
+            result = matchFirst && isMatch(s.substring(1), p.substring(1));
+        }
+
+        if (!hashmap.containsKey(s)) {
+            hashmap.put(s, new HashMap<>());
+        }
+        hashmap.get(s).put(p, result);
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(mn)$. With memoization, we save the repetitive recursive computation. We check every possible suffixes of `s` and `p`, and the recursive function will be called at most `m * n` times. (TBH, I don't know how to calculate the time complexity without memoization.)
+- **Space complexity:** $O(mn)$. We create a hashmap with size `m * n`, and the recursive calls also take up $O(mn)$ space.
+
+<h3 id="solution_2">Solution 2: Dynamic Programming</h3>
+
+We can also use dynamic programming to solve the problem.
+
+We can create a `(n + 1) * (m + 1)` size `dp`, where `dp[i][j]` represents whether pattern `p[0..(i-1)]` matches the text `s[0..(j-1)]`.
+
+The base case is `dp[0][0] = true`, which means two empty strings are match.
+
+If `s` is empty but `p` is not empty, there're still possibilities that they are match. Let's consider the case when `s = ""` and `p = a*b*`. `p` matches `s` because `*` could match zero elements. So we need to be careful to handle such cases. We can add a for loop to update the first column's values in `dp` table.
+
+Then we have a nested for loop to build up our `dp` table:
+
+- If `p[i] == '*'`:
+  - we first check if `dp[i-1][j+1] == true`, since if `p[0..(i-2)]` matches `s[j]`, then `p[0..i]` also matches `s[j]`.
+  - if `dp[i-1][j+1] != true`, then we need to check `dp[i+1][j]`(whether `p[0..i]` matches `s[0..(j-1)]`), and whether `p[i-1]` matches `s[j]`.
+- if `p[i] != '*'`:
+  - we simply check `dp[i][j]`(whether `p[0..(i-1)]` matches `s[0..(j-1)]`), and whether `p[i]` matches `s[j]`.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m = s.length(), n = p.length();
+        vector<vector<bool>> dp(n + 1, vector<bool>(m + 1, false));
+
+        dp[0][0] = true;
+
+        for (int i = 0; i < n; i++) {
+            if (p[i] == '*') {
+                dp[i + 1][0] = dp[i - 1][0];
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (p[i] == '*') {
+                for (int j = 0; j < m; j++) {
+                    dp[i + 1][j + 1] = dp[i - 1][j + 1] || (dp[i + 1][j] && (s[j] == p[i - 1] || p[i - 1] == '.'));
+                }
+            }
+            else {
+                for (int j = 0; j < m; j++) {
+                    dp[i + 1][j + 1] = dp[i][j] && (s[j] == p[i] || p[i] == '.');
+                }
+            }
+        }
+
+        return dp[n][m];
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int m = s.length(), n = p.length();
+
+        boolean[][] dp = new boolean[n + 1][m + 1];
+        dp[0][0] = true;
+
+        for (int i = 0; i < n; i++) {
+            if (p.charAt(i) == '*') {
+                dp[i + 1][0] = dp[i - 1][0];
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            char c = p.charAt(i);
+            if (c == '*') {
+                for (int j = 0; j < m; j++) {
+                    dp[i + 1][j + 1] = dp[i - 1][j + 1] ||
+                        (dp[i + 1][j] && (s.charAt(j) == p.charAt(i - 1) || p.charAt(i - 1) == '.'));
+                }
+            }
+            else {
+                for (int j = 0; j < m; j++) {
+                    dp[i + 1][j + 1] = dp[i][j] && (s.charAt(j) == c || c == '.');
+                }
+            }
+        }
+
+        return dp[n][m];
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(mn)$. We have a nested for loop which takes $O(mn)$.
+- **Space complexity:** $O(mn)$. We create a `dp` with size `(n + 1) * (m + 1)`.
+
+<RegularExpressionMatchingEn />
