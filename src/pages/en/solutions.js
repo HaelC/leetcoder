@@ -16,7 +16,7 @@ const SolutionsPage = ({ data }) => {
         <thead>
           <tr>
             <th>Title</th>
-            <th>Difficulties</th>
+            <th>Difficulty</th>
             <th>Tags</th>
           </tr>
         </thead>
