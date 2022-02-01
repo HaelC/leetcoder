@@ -7,15 +7,52 @@ const SolutionsPage = ({ data }) => {
   return (
     <Layout>
       <Seo title="Solutions" />
-      <ul className="solution-list">
-        {data.allMdx.nodes.map(node => (
-          <li key={node.id}>
-            <Link to={`/${node.slug.slice(0, -1)}`}>
-              {node.frontmatter.number}. {node.frontmatter.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <table className="solution-table">
+        <colgroup>
+          <col className="col-title" />
+          <col className="col-difficulties" />
+          <col className="col-tags" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Difficulties</th>
+            <th>Tags</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.allMdx.nodes.map(node => (
+            <tr key={node.id}>
+              <td>
+                <Link to={`/${node.slug.slice(0, -1)}`}>
+                  {node.frontmatter.number}. {node.frontmatter.title}
+                </Link>
+              </td>
+              <td>
+                <ul className="problem-difficulties">
+                  {node.frontmatter.difficulties.map(difficulty => (
+                    <li
+                      className={`problem-difficulty ${difficulty}`}
+                      key={difficulty}
+                    >
+                      {difficulty.toUpperCase()}
+                    </li>
+                  ))}
+                </ul>
+              </td>
+              <td>
+                <ul className="problem-tags">
+                  {node.frontmatter.tags.map(tag => (
+                    <li className="problem-tag" key={tag}>
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </Layout>
   );
 };
@@ -30,6 +67,8 @@ export const query = graphql`
         frontmatter {
           number
           title
+          difficulties
+          tags
         }
         id
         slug

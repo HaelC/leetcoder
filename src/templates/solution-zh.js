@@ -29,7 +29,7 @@ const SolutionPage = ({ data }) => {
   const zhToEn = {
     简单: "easy",
     中等: "medium",
-    困难: "difficult",
+    困难: "hard",
   };
 
   return (
@@ -40,7 +40,10 @@ const SolutionPage = ({ data }) => {
           {number}. {title}
         </h2>
         {difficulties.map(difficulty => (
-          <span className={`difficulty ${zhToEn[difficulty]}`} key={difficulty}>
+          <span
+            className={`problem-difficulty ${zhToEn[difficulty]}`}
+            key={difficulty}
+          >
             {difficulty}
           </span>
         ))}

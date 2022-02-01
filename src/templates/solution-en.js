@@ -33,11 +33,13 @@ const SolutionPage = ({ data }) => {
         <h2 className="problem-title">
           {number}. {title}
         </h2>
-        {difficulties.map(difficulty => (
-          <span className={`difficulty ${difficulty}`} key={difficulty}>
-            {difficulty.toUpperCase()}
-          </span>
-        ))}
+        <ul className="problem-difficulties">
+          {difficulties.map(difficulty => (
+            <li className={`problem-difficulty ${difficulty}`} key={difficulty}>
+              {difficulty.toUpperCase()}
+            </li>
+          ))}
+        </ul>
         <a
           href={link}
           className="leetcode-link"
