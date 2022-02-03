@@ -1,0 +1,84 @@
+---
+number: 11
+title: Container With Most Water
+link: https://leetcode.com/problems/container-with-most-water/
+difficulties: [medium]
+tags: [Array, Two Pointers, Greedy]
+related_problems: []
+---
+
+<h3 id="solution_1">Solution 1: Two Pointers</h3>
+
+We can use a nested for loop to check all possible containers. But it takes $O(n^2)$ and would result in Time Limit Exceeded. Can we come up with a better solution? We can use two pointers to get a $O(n)$ solution.
+
+At first, two pointers were set at the left-most line (`p1 = 0`) and the right-most line (`p2 = n - 1`). In this case, we get a maximum width of the container (`n - 1`), and get an initial area with `min(height[0], height[n - 1]) * (n - 1)`.
+
+After that, we will move one of the pointers and shrink the width of the container. We want to make the container's effective height, which is determined by the shorter line, as high as possible. So we need to find a line which is higher than the shorter line's height. Keep the process until two pointers converge.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int p1 = 0, p2 = height.size() - 1;
+        int result = 0;
+
+        while (p1 < p2) {
+            int h1 = height[p1], h2 = height[p2];
+            result = max(result, min(h1, h2) * (p2 - p1));
+            if (h1 <= h2) {
+                while (p1 < p2 && height[p1] <= h1) {
+                    p1++;
+                }
+            }
+            else {
+                while (p2 > p1 && height[p2] <= h2) {
+                    p2--;
+                }
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int maxArea(int[] height) {
+        int p1 = 0, p2 = height.length - 1;
+        int result = 0;
+
+        while (p1 < p2) {
+            int h1 = height[p1], h2 = height[p2];
+            result = Math.max(result, Math.min(h1, h2) * (p2 - p1));
+            if (h1 <= h2) {
+                while (p1 < p2 && height[p1] <= h1) {
+                    p1++;
+                }
+            }
+            else {
+                while (p2 > p1 && height[p2] <= h2) {
+                    p2--;
+                }
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n)$. Two pointers will go through all elements of the array.
+- **Space complexity:** $O(1)$. We only need constant space.

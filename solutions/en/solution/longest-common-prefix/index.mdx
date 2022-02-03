@@ -1,0 +1,73 @@
+---
+number: 14
+title: Longest Common Prefix
+link: https://leetcode.com/problems/longest-common-prefix/
+difficulties: [easy]
+tags: [String]
+related_problems: []
+---
+
+<h3 id="solution_1">Solution 1: Checking One By One</h3>
+
+We will declare an index variable `len` with initial value `0`. We go through all the strings in the input array, if `len` is greater than or equal to any string, or different strings have different characters at `len`, then we know that the longest common prefix has a length of `len`.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        int len = 0, n = strs.size();
+
+        while (true) {
+            if (len >= strs[0].size()) {
+                return strs[0].substr(0, len);
+            }
+            char c = strs[0][len];
+            for (int i = 1; i < n; i++) {
+                if (len >= strs[i].size() || strs[i][len] != c) {
+                    return strs[0].substr(0, len);
+                }
+            }
+            len++;
+        }
+
+        return "";
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        int len = 0, n = strs.length;
+
+        while (true) {
+            if (len >= strs[0].length()) {
+                return strs[0].substring(0, len);
+            }
+
+            char c = strs[0].charAt(len);
+            for (int i = 1; i < n; i++) {
+                if (len >= strs[i].length() || strs[i].charAt(len) != c) {
+                    return strs[0].substring(0, len);
+                }
+            }
+            len++;
+        }
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n\times m)$, where `n` is the number of strings, and `m` is the minimum length of strings.
+- **Space complexity:** $O(1)$. We only need constant space.

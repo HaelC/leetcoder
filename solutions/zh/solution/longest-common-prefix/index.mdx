@@ -1,0 +1,73 @@
+---
+number: 14
+title: 最长公共前缀
+link: https://leetcode-cn.com/problems/longest-common-prefix/
+difficulties: [简单]
+tags: [字符串]
+related_problems: []
+---
+
+<h3 id="solution_1">解法一：一个个检查</h3>
+
+我们定义一个下标变量`len`，其初始值为`0`。我们遍历输入数组中的所有字符串，如果`len`大于等于任一字符串的长度，或者字符串在下标`len`的字符有所不同，那么我们知道最长公共前缀的长度即是`len`。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        int len = 0, n = strs.size();
+
+        while (true) {
+            if (len >= strs[0].size()) {
+                return strs[0].substr(0, len);
+            }
+            char c = strs[0][len];
+            for (int i = 1; i < n; i++) {
+                if (len >= strs[i].size() || strs[i][len] != c) {
+                    return strs[0].substr(0, len);
+                }
+            }
+            len++;
+        }
+
+        return "";
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        int len = 0, n = strs.length;
+
+        while (true) {
+            if (len >= strs[0].length()) {
+                return strs[0].substring(0, len);
+            }
+
+            char c = strs[0].charAt(len);
+            for (int i = 1; i < n; i++) {
+                if (len >= strs[i].length() || strs[i].charAt(len) != c) {
+                    return strs[0].substring(0, len);
+                }
+            }
+            len++;
+        }
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n\times m)$，其中`n`是字符串的数目，`m`是最短字符串的长度。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。

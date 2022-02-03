@@ -1,0 +1,84 @@
+---
+number: 11
+title: 盛最多水的容器
+link: https://leetcode-cn.com/problems/container-with-most-water/
+difficulties: [中等]
+tags: [数组, 双指针, 贪心]
+related_problems: []
+---
+
+<h3 id="solution_1">解法一：双指针</h3>
+
+我们可以用一个嵌套的 for 循环来检查所有可能的容器。这需要$O(n^2)$，会造成超时。我们能否有一个更好的解法呢？我们可以用双指针来得到一个$O(n)$的解法。
+
+两个指针一开始分别设定为最左边的垂直线（`p1 = 0`）以及最右边的垂直线（`p2 = n - 1`）。这种情况下，容器的宽度最大（`n - 1`），并能计算得到一个初始面积`min(height[0], height[n - 1]) * (n - 1)`。
+
+随后，我们移动一个指针，缩小容器的宽度。我们想要让容易的有效高度——取决于左右两边较短的那条线——尽可能高。所以我们需要找到一条比短边更高的垂直线。重复该过程知道两个指针交汇。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int p1 = 0, p2 = height.size() - 1;
+        int result = 0;
+
+        while (p1 < p2) {
+            int h1 = height[p1], h2 = height[p2];
+            result = max(result, min(h1, h2) * (p2 - p1));
+            if (h1 <= h2) {
+                while (p1 < p2 && height[p1] <= h1) {
+                    p1++;
+                }
+            }
+            else {
+                while (p2 > p1 && height[p2] <= h2) {
+                    p2--;
+                }
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int maxArea(int[] height) {
+        int p1 = 0, p2 = height.length - 1;
+        int result = 0;
+
+        while (p1 < p2) {
+            int h1 = height[p1], h2 = height[p2];
+            result = Math.max(result, Math.min(h1, h2) * (p2 - p1));
+            if (h1 <= h2) {
+                while (p1 < p2 && height[p1] <= h1) {
+                    p1++;
+                }
+            }
+            else {
+                while (p2 > p1 && height[p2] <= h2) {
+                    p2--;
+                }
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n)$。双指针会遍历数组中每个元素。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。

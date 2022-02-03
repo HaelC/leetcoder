@@ -1,4 +1,5 @@
 import os
+from turtle import title
 
 problem_number = input("Problem number: ")
 problem_title = input("Problem title: ")
@@ -83,3 +84,15 @@ with open(filename, 'w') as f:
     if (hasFollowUp == "y"):
         f.write(followup_body)
 
+readme_path = "../README.md"
+readme_zh_path = "../README-zh.md"
+
+link_url = "https://leetcoder.me/en/solution/" + slug
+code_url = "https://github.com/HaelChan/leetcoder/tree/main/code/{}.%20{}".format(four_digits, problem_title.replace(" ", "%20"))
+row = "| {}. {} | {} | [link]({}) | [code]({}) |\n".format(problem_number, problem_title, difficulties, link_url, code_url)
+
+with open(readme_path, 'a') as f:
+    f.write(row)
+
+with open(readme_zh_path, 'a') as f:
+    f.write(row)
