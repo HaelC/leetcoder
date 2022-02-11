@@ -1,0 +1,452 @@
+---
+number: 15
+title: 3Sum
+link: https://leetcode.com/problems/3sum/
+difficulties: [medium]
+tags: [Sorting, Hash Table, Two Pointers]
+related_problems:
+  [
+    [Two Sum, two-sum],
+    [Two Sum II - Input Array Is Sorted, two-sum-ii-input-array-is-sorted],
+  ]
+---
+
+import { Link } from "gatsby";
+
+[3Sum](https://leetcode.com/problems/3sum/) can be treated as a follow-up of the original [Two Sum problem](https://leetcode.com/problems/two-sum/). In Two Sum, we want to find two numbers adding up to 0. In 3Sum, we can use a for loop to get each number `target`, and trying to find two numbers adding up to `-target` in the remaining array. We can apply most <Link to="/en/solution/two-sum">Two Sum solutions</Link> to this problem.
+
+<pre class="pseudo-code">
+  {`for i = 0 to n - 1:
+    target = nums[i]
+    apply two_sum in nums[(i + 1) .. (n - 1)] to find sum == -target
+`}
+</pre>
+
+<h3 id="solution_1">Solution 1: Hash Table</h3>
+
+Similar to <Link to="/en/solution/two-sum#solution_2">Solution 2 of Two Sum</Link>, we can use a hashset to store visited values in `twoSum` function.
+
+Since the problem asks that the solution set must not contain duplicate triplets, we can use a hashset `triplets` to store the result as well. Also, we need to sort the `triplet` before adding to `triplets`.
+
+Sorting and inserting into the hashset take time. There are some optimizations to make the code more efficient when dealing with duplicates:
+
+- Add a hashset `targets` to store all visited target values
+- Add a hashset `used` to store the used value to solve the sub two-sum problem
+
+Note that despite the optimizations, C++ solution might still timeout since we are using a `set` instead of `unordered_set` to store the `vector`s.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+private:
+    void twoSum(vector<int>& nums, int target, int start, set<vector<int>>& triplets) {
+        int n = nums.size();
+        unordered_set<int> visited;
+        unordered_set<int> used;
+        for (int i = start; i < n; i++) {
+            int num = nums[i];
+            if (visited.count(-target - num) > 0 && used.count(num) == 0) {
+                vector<int> triplet{target, -target - num, num};
+                sort(triplet.begin(), triplet.end());
+                triplets.insert(triplet);
+                visited.insert(num);
+                used.insert(num);
+            }
+            else {
+                visited.insert(num);
+            }
+        }
+    }
+
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        set<vector<int>> triplets;
+        unordered_set<int> targets;
+
+        for (int i = 0; i < n; i++) {
+            int target = nums[i];
+            if (targets.count(target) == 0) {
+                twoSum(nums, target, i + 1, triplets);
+                targets.insert(target);
+            }
+        }
+
+        return vector<vector<int>>(triplets.begin(), triplets.end());
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    private void twoSum(int[] nums, int target, int start, Set<List<Integer>> triplets) {
+        int n = nums.length;
+        Set<Integer> visited = new HashSet<>();
+        Set<Integer> used = new HashSet<>();
+        for (int i = start; i < n; i++) {
+            int num = nums[i];
+            if (visited.contains(-target - num) && !used.contains(num)) {
+                List<Integer> triplet = Arrays.asList(target, -target - num, num);
+                Collections.sort(triplet);
+                triplets.add(triplet);
+                visited.add(num);
+                used.add(num);
+            }
+            else {
+                visited.add(num);
+            }
+        }
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        Set<List<Integer>> triplets = new HashSet<>();
+        Set<Integer> targets = new HashSet<>();
+
+        for (int i = 0; i < n; i++) {
+            int target = nums[i];
+            if (!targets.contains(target)) {
+                twoSum(nums, target, i + 1, triplets);
+                targets.add(target);
+            }
+        }
+
+        List<List<Integer>> result = new ArrayList<>(triplets);
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n^2)$. Two sum function takes $O(n)$, and we call two sum function for `n` times.
+- **Space complexity:** $O(n^2)$. `targets`, `visited` and `used` takes $O(n)$ space, while the `triplets` could potentially takes up $O(n^2)$ space.
+
+<h3 id="solution_2">Solution 2: Sorting and Hash Table</h3>
+
+In order to handle the duplicate numbers, we could sort the input array first. After sorting, all duplicate numbers are adjacent and we don't need additional hashset to handle duplicates, though we might still need a hashset `visited` in the two sum function.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+private:
+    unordered_set<int> visited;
+
+    void twoSum(vector<int>& nums, int target, int start, vector<vector<int>>& result) {
+        int n = nums.size();
+
+        for (int i = start; i < n; i++) {
+            int num = nums[i];
+            if (visited.count(-target - num) > 0) {
+                result.push_back({target, -target - num, num});
+                while (i + 1 < n && nums[i + 1] == num) {
+                    i++;
+                }
+            }
+            else {
+                visited.insert(num);
+            }
+        }
+
+        visited.clear();
+    }
+
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> result;
+
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                int target = nums[i];
+                twoSum(nums, target, i + 1, result);
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    private void twoSum(int[] nums, int target, int start, List<List<Integer>> result) {
+        int n = nums.length;
+        Set<Integer> visited = new HashSet<>();
+
+        for (int i = start; i < n; i++) {
+            int num = nums[i];
+            if (visited.contains(-target - num)) {
+                result.add(Arrays.asList(target, -target - num, num));
+                while (i + 1 < n && nums[i + 1] == num) {
+                    i++;
+                }
+            }
+            else {
+                visited.add(num);
+            }
+        }
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                int target = nums[i];
+                twoSum(nums, target, i + 1, result);
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n^2)$. The sorting takes $O(n\text{log}(n))$. Two sum takes $O(n)$ and it is called `n` times. The overall time complexity is $O(n^2)$.
+- **Space complexity:** $O(n)$. In two sum function, the hashset `visited` takes up $O(n)$.
+
+<h3 id="solution_3">Solution 3: Sorting and Two Pointers</h3>
+
+After sorting, we can also use two pointers, which doesn't require additional space and is more efficient.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+private:
+    void twoSum(vector<int>& nums, int target, int start, vector<vector<int>>& result) {
+        int p1 = start, p2 = nums.size() - 1;
+        while (p1 < p2) {
+            int num1 = nums[p1], num2 = nums[p2];
+            if (num1 + num2 == -target) {
+                result.push_back({target, num1, num2});
+                if (num1 == num2) {
+                    return;
+                }
+                while (nums[p1] == num1) {
+                    p1++;
+                }
+                while (nums[p2] == num2) {
+                    p2--;
+                }
+            }
+            else if (num1 + num2 < -target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+    }
+
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> result;
+
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                int target = nums[i];
+                twoSum(nums, target, i + 1, result);
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    private void twoSum(int[] nums, int target, int start, List<List<Integer>> result) {
+        int p1 = start, p2 = nums.length - 1;
+        while (p1 < p2) {
+            int num1 = nums[p1], num2 = nums[p2];
+            if (num1 + num2 == -target) {
+                result.add(Arrays.asList(target, num1, num2));
+                if (num1 == num2) {
+                    return;
+                }
+
+                while (nums[p1] == num1) {
+                    p1++;
+                }
+
+                while (nums[p2] == num2) {
+                    p2--;
+                }
+            }
+            else if (num1 + num2 < -target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                int num = nums[i];
+                twoSum(nums, num, i + 1, result);
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n^2)$. Same as solution 2, we will call two sum `n` times.
+- **Space complexity:** $O(1)$. We only need constant space.
+
+<h3 id="solution_4">Solution 4: Counting with Map</h3>
+
+We can also use the map `numCount` to count the occurrences of each number. Instead of using hash map, we choose the map (TreeMap in Java) data structure so that keys are sorted when iterating through the map. The algorithm is as follows:
+
+<pre class="pseudo-code">
+  {`result = array()
+numCount = map()
+for num in nums:
+    numCount[num]++
+
+for num1 in numCount.keys():
+    numCount[num1]--
+    for num2 in numCount.remainingKeys():
+        numCount[num2]--
+        if (-num1 - num2 >= num2) AND numCount[-num1 - num2] > 0:
+            result.add(num1, num2, -num1 - num2)
+        numCount[num2]++
+    numCount[num1]++
+`}
+</pre>
+
+Since we are using the map, we are assured that `num2 >= num1`, we just need to check whether `-num1 - num2 >= num2`, and whether the map contains `-num1 - num2` as a valid key.
+
+The actual code is different between C++ and Java. In C++ we can directly manipulate iterators. In Java, we might have to convert the `keySet()` to an array, and then use two indices `i` and `j` to do the iteration.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        map<int, int> numCount;
+        vector<vector<int>> result;
+
+        for (int num : nums) {
+            numCount[num]++;
+        }
+
+
+        for (auto it = numCount.begin(); it != numCount.end(); it++) {
+            int num1 = (*it).first;
+            (*it).second = (*it).second - 1;
+            for (auto it2 = it; it2 != numCount.end(); it2++) {
+                if ((*it2).second > 0) {
+                    int num2 = (*it2).first;
+                    if (num2 > -num1 - num2) {
+                        break;
+                    }
+                    (*it2).second = (*it2).second - 1;
+                    if (numCount.count(-num1 - num2) > 0 && numCount[-num1 - num2] > 0) {
+                        result.push_back({num1, num2, -num1 - num2});
+                    }
+                    (*it2).second = (*it2).second + 1;
+                }
+            }
+            (*it).second = (*it).second + 1;
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Map<Integer, Integer> numCount = new TreeMap();
+        for (int num : nums) {
+            numCount.put(num, numCount.getOrDefault(num, 0) + 1);
+        }
+
+        List<Integer> sortedNums = new ArrayList<>(numCount.keySet());
+
+        for (int i = 0; i < sortedNums.size(); i++) {
+            int num1 = sortedNums.get(i);
+            numCount.put(num1, numCount.get(num1) - 1);
+            for (int j = i; j < sortedNums.size(); j++) {
+                int num2 = sortedNums.get(j);
+                if (num2 > -num1 - num2) {
+                    break;
+                }
+                if (numCount.get(num2) > 0) {
+                    numCount.put(num2, numCount.get(num2) - 1);
+                    if (numCount.getOrDefault(-num1 - num2, 0) > 0) {
+                        result.add(Arrays.asList(num1, num2, -num1 - num2));
+                    }
+                    numCount.put(num2, numCount.get(num2) + 1);
+                }
+            }
+            numCount.put(num1, numCount.get(num1) + 1);
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n^2)$ for C++, $O(n^2\text{log}^2n)$ for Java. Note that tree map has complexity of $O(\text{log}N)$ for insertion and lookup. Creating the `numCount` takes $O(n\text{log}(n))$. In the nested iteration in C++, the operations on iterators are constant. While in Java, there are map insertion and lookup in the nested for loop, which makes the overall time complexity as $O(n^2\text{log}^2n)$.
+- **Space complexity:** $O(n)$. We create a map with potential size `n`.
