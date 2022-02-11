@@ -25,3 +25,4 @@ https://leetcoder.me
 | 167. Two Sum II - Input Array Is Sorted | Easy | [link](https://leetcoder.me/en/solution/two-sum-ii-input-array-is-sorted) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0167.%20Two%20Sum%20II%20-%20Input%20Array%20Is%20Sorted) |
 | 206. Reverse Linked List | Easy | [link](https://leetcoder.me/en/solution/reverse-linked-list) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0206.%20Reverse%20Linked%20List) |
 | 516. Longest Palindromic Subsequence | Medium | [link](https://leetcoder.me/en/solution/longest-palindromic-subsequence) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0516.%20Longest%20Palindromic%20Subsequence) |
+| 16. 3Sum Closest | medium | [link](https://leetcoder.me/en/solution/3sum-closest) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0016.%203Sum%20Closest) |

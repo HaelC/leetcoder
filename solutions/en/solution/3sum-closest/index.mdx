@@ -1,0 +1,108 @@
+---
+number: 16
+title: 3Sum Closest
+link: https://leetcode.com/problems/3sum-closest/
+difficulties: [medium]
+tags: [Array, Sorting, Two Pointers]
+related_problems: [[3Sum, 3sum]]
+---
+
+import { Link } from "gatsby";
+
+<h3 id="solution_1">Solution 1: Sorting and Two Pointers</h3>
+
+Similar to <Link to="/en/solution/3sum#solution_3">solution 3 of 3Sum</Link>, we can sort the array first, and then apply two pointers.
+
+We have a for loop with index `i` to iterate through the input array. In the remaining array, we set two pointer to `i + 1` and `n - 1`. We can calculate 3 sum `sum = nums[i] + nums[i + 1] + nums[n - 1]` and compare the difference between `sum` and `target`.
+
+If `sum == target`, we have already found the closest sum, and we can return directly. If `sum < target`, we move `p1` to the right. If `sum > target`, we move `p2` to the left.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        int n = nums.size();
+        int closestSum = INT_MAX, minDiff = INT_MAX;
+        sort(nums.begin(), nums.end());
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int p1 = i + 1, p2 = n - 1;
+            while (p1 < p2) {
+                int sum = num + nums[p1] + nums[p2];
+                if (sum == target) {
+                    return sum;
+                }
+                else if (sum < target) {
+                    if (target - sum < minDiff) {
+                        closestSum = sum;
+                        minDiff = target - sum;
+                    }
+                    p1++;
+                }
+                else {
+                    if (sum - target < minDiff) {
+                        closestSum = sum;
+                        minDiff = sum - target;
+                    }
+                    p2--;
+                }
+            }
+        }
+
+        return closestSum;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        int n = nums.length;
+        int closestSum = Integer.MAX_VALUE, minDiff = Integer.MAX_VALUE;
+        Arrays.sort(nums);
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int p1 = i + 1, p2 = n - 1;
+            while (p1 < p2) {
+                int sum = num + nums[p1] + nums[p2];
+                if (sum == target) {
+                    return sum;
+                }
+                else if (sum < target) {
+                    if (target - sum < minDiff) {
+                        closestSum = sum;
+                        minDiff = target - sum;
+                    }
+                    p1++;
+                }
+                else {
+                    if (sum - target < minDiff) {
+                        closestSum = sum;
+                        minDiff = sum - target;
+                    }
+                    p2--;
+                }
+            }
+        }
+
+        return closestSum;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n^2)$. Sorting takes $O(n\text{log}(n))$. Two pointers takes $O(n)$, and we apply two pointers `n` times.
+- **Space complexity:** $O(1)$. We only need constant space.

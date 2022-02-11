@@ -25,3 +25,4 @@ https://leetcoder.me
 | 167. 两数之和 II - 输入有序数组 | 简单 | [链接](https://leetcoder.me/zh/solution/two-sum-ii-input-array-is-sorted) | [代码](https://github.com/HaelChan/leetcoder/tree/main/code/0167.%20Two%20Sum%20II%20-%20Input%20Array%20Is%20Sorted) |
 | 206. 反转链表 | 简单 | [链接](https://leetcoder.me/zh/solution/reverse-linked-list) | [代码](https://github.com/HaelChan/leetcoder/tree/main/code/0206.%20Reverse%20Linked%20List) |
 | 516. 最长回文子序列 | 中等 | [链接](https://leetcoder.me/zh/solution/longest-palindromic-subsequence) | [代码](https://github.com/HaelChan/leetcoder/tree/main/code/0516.%20Longest%20Palindromic%20Subsequence) |
+| 16. 3Sum Closest | medium | [link](https://leetcoder.me/en/solution/3sum-closest) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0016.%203Sum%20Closest) |

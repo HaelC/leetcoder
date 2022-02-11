@@ -3,11 +3,12 @@ number: 15
 title: 三数之和
 link: https://leetcode-cn.com/problems/3sum/
 difficulties: [中等]
-tags: [排序, 哈希表, 双指针]
+tags: [数组，排序, 哈希表, 双指针]
 related_problems:
   [
     [两数之和, two-sum],
     [两数之和 II - 输入有序数组, two-sum-ii-input-array-is-sorted],
+    [最接近的三数之和, 3sum-closest],
   ]
 ---
 
@@ -24,7 +25,7 @@ import { Link } from "gatsby";
 
 <h3 id="solution_1">解法一：哈希表</h3>
 
-类似于<Link to="/en/solution/two-sum#solution_2">两数之和的解法二</Link>，在`twoSum`函数中我们可以用一个哈希集来存储见过的值。
+类似于<Link to="/zh/solution/two-sum#solution_2">两数之和的解法二</Link>，在`twoSum`函数中我们可以用一个哈希集来存储见过的值。
 
 问题要求答案中不可以包含重复的三元组，我们也可以用一个哈希集`triplets`来存储结果。在将符合条件的三元组`triplet`添加到`triplets`之前，我们还需要将`triplet`进行排序。
 
