@@ -1,0 +1,108 @@
+---
+number: 16
+title: 最接近的三数之和
+link: https://leetcode-cn.com/problems/3sum-closest/
+difficulties: [中等]
+tags: [数组, 排序, 双指针]
+related_problems: [[三数之和, 3sum], [较小的三数之和, 3sum-smaller]]
+---
+
+import { Link } from "gatsby";
+
+<h3 id="solution_1">解法一：排序与双指针</h3>
+
+与<Link to="/zh/solution/3sum#solution_3">三数之和的解法三</Link>类似，我们对数组先进行排序，然后采用双指针。
+
+我们用一个下标为`i`的 for 循环来遍历输入数组。在余下的数组中，我们设置双指针`i + 1`和`n - 1`。我们计算三数之和`sum = nums[i] + nums[i + 1] + nums[n - 1]`，并比较`sum`与`target`的差值。
+
+如果`sum == target`，那我们已经找到了最接近的三数之和，我们可以直接返回其值。如果`sum < target`，我们将`p1`指针右移。如果`sum > target`，我们则将`p2`指针左移。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        int n = nums.size();
+        int closestSum = INT_MAX, minDiff = INT_MAX;
+        sort(nums.begin(), nums.end());
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int p1 = i + 1, p2 = n - 1;
+            while (p1 < p2) {
+                int sum = num + nums[p1] + nums[p2];
+                if (sum == target) {
+                    return sum;
+                }
+                else if (sum < target) {
+                    if (target - sum < minDiff) {
+                        closestSum = sum;
+                        minDiff = target - sum;
+                    }
+                    p1++;
+                }
+                else {
+                    if (sum - target < minDiff) {
+                        closestSum = sum;
+                        minDiff = sum - target;
+                    }
+                    p2--;
+                }
+            }
+        }
+
+        return closestSum;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        int n = nums.length;
+        int closestSum = Integer.MAX_VALUE, minDiff = Integer.MAX_VALUE;
+        Arrays.sort(nums);
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int p1 = i + 1, p2 = n - 1;
+            while (p1 < p2) {
+                int sum = num + nums[p1] + nums[p2];
+                if (sum == target) {
+                    return sum;
+                }
+                else if (sum < target) {
+                    if (target - sum < minDiff) {
+                        closestSum = sum;
+                        minDiff = target - sum;
+                    }
+                    p1++;
+                }
+                else {
+                    if (sum - target < minDiff) {
+                        closestSum = sum;
+                        minDiff = sum - target;
+                    }
+                    p2--;
+                }
+            }
+        }
+
+        return closestSum;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2)$。排序需要$O(n\text{log}(n))$。双指针需要$O(n)$，我们采用了`n`次双指针。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。

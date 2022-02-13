@@ -20,7 +20,10 @@ https://leetcoder.me
 | 12. Integer to Roman | Easy | [link](https://leetcoder.me/en/solution/integer-to-roman) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0012.%20Integer%20to%20Roman) |
 | 13. Roman to Integer | Easy | [link](https://leetcoder.me/en/solution/roman-to-integer) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0013.%20Roman%20to%20Integer) |
 | 14. Longest Common Prefix | Easy | [link](https://leetcoder.me/en/solution/longest-common-prefix) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0014.%20Longest%20Common%20Prefix) |
+| 15. 3Sum | Medium | [link](https://leetcoder.me/en/solution/3sum) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0015.%203Sum) |
+| 16. 3Sum Closest | medium | [link](https://leetcoder.me/en/solution/3sum-closest) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0016.%203Sum%20Closest) |
 | 88. Merge Sorted Array | Easy | [link](https://leetcoder.me/en/solution/merge-sorted-array) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0088.%20Merge%20Sorted%20Array) |
 | 167. Two Sum II - Input Array Is Sorted | Easy | [link](https://leetcoder.me/en/solution/two-sum-ii-input-array-is-sorted) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0167.%20Two%20Sum%20II%20-%20Input%20Array%20Is%20Sorted) |
 | 206. Reverse Linked List | Easy | [link](https://leetcoder.me/en/solution/reverse-linked-list) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0206.%20Reverse%20Linked%20List) |
+| 259. 3Sum Smaller | medium | [link](https://leetcoder.me/en/solution/3sum-smaller) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0259.%203Sum%20Smaller) |
 | 516. Longest Palindromic Subsequence | Medium | [link](https://leetcoder.me/en/solution/longest-palindromic-subsequence) | [code](https://github.com/HaelChan/leetcoder/tree/main/code/0516.%20Longest%20Palindromic%20Subsequence) |

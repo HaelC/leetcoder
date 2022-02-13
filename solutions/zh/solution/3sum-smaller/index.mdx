@@ -1,0 +1,171 @@
+---
+number: 259
+title: 较小的三数之和
+link: https://leetcode-cn.com/problems/3sum-smaller/
+difficulties: [中等]
+tags: [数组, 排序, 二分查找, 双指针]
+related_problems: [[三数之和, 3sum], [最接近的三数之和, 3sum-closest]]
+---
+
+对于三数之和的一系列问题（比如[三数之和](https://leetcode-cn.com/problems/3sum/), [最接近的三数之和](https://leetcode-cn.com/problems/3sum-closest/)以及这[较小的三数之和](https://leetcode-cn.com/problems/3sum-smaller/)），排序经常是一个不错的预处理。
+
+<h3 id="solution_1">解法一：排序与二分查找</h3>
+
+我们可以将输入数组排序，随后用下标`i`和`j`进行一个嵌套的 for 循环。如果我们找到下标`k`使得`nums[i] + nums[j] + nums[k] < target`，那么我们知道有`k - j`个三元组（从`nums[i], nums[j], nums[j + 1]`到`nums[i], nums[j], nums[k]`），其三数之和小于`target`。我们可以用二分查找来找到最大的下标`k`。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int threeSumSmaller(vector<int>& nums, int target) {
+        int n = nums.size(), result = 0;
+        sort(nums.begin(), nums.end());
+
+        for (int i = 0; i < n - 2; i++) {
+            int num1 = nums[i];
+            for (int j = i + 1; j < n - 1; j++) {
+                int num2 = nums[j];
+                if (num1 + num2 + nums[j + 1] >= target) {
+                    break;
+                }
+
+                int left = j + 1, right = n - 1;
+                while (left < right) {
+                    int mid = (left + right + 1) / 2;
+                    if (num1 + num2 + nums[mid] < target) {
+                        left = mid;
+                    }
+                    else {
+                        right = mid - 1;
+                    }
+                }
+                result += left - j;
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int threeSumSmaller(int[] nums, int target) {
+        int n = nums.length, result = 0;
+        Arrays.sort(nums);
+
+        for (int i = 0; i < n; i++) {
+            int num1 = nums[i];
+            for (int j = i + 1; j < n - 1; j++) {
+                int num2 = nums[j];
+                if (num1 + num2 + nums[j + 1] >= target) {
+                    break;
+                }
+
+                int left = j + 1, right = n - 1;
+                while (left < right) {
+                    int mid = (left + right + 1) / 2;
+                    if (num1 + num2 + nums[mid] < target) {
+                        left = mid;
+                    }
+                    else {
+                        right = mid - 1;
+                    }
+                }
+                result += left - j;
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2\text{log}(n))$。排序需要$O(n\text{log}(n))$。嵌套的 for 循环需要$O(n^2)$，内部的二分查找需要$O(\text{log}(n))$。总的时间复杂度为$O(n^2\text{log}(n))$。
+- **空间复杂度：** $O(1)$。我们只需要常数级空间。
+
+<h3 id="solution_2">解法二：排序与双指针</h3>
+
+排序过后，我们也可以用双指针来解决问题。
+
+我们可以用带下标`i`的一个 for 循环来遍历数组。在剩余的数组中，我们设置双指针分别为`p1 = i + 1`以及`p2 = n - 1`。
+
+- 如果`nums[i] + nums[p1] + nums[p2] < target`，那我们知道有`p2 - p1`个三元组（从`nums[i], nums[p1], nums[p1 + 1]`到`nums[i], nums[p1], nums[p2]`），其三数之和小于`target`。我们将`p2 - p1`加到结果中，并将`p1`右移。
+- 如果`nums[i] + nums[p1] + nums[p2] >= target`，这意味着`nums[p2]`偏大，我们将`p2`左移。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int threeSumSmaller(vector<int>& nums, int target) {
+        int n = nums.size(), result = 0;
+        sort(nums.begin(), nums.end());
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int p1 = i + 1, p2 = n - 1;
+            while (p1 < p2) {
+                if (num + nums[p1] + nums[p2] < target) {
+                    result += p2 - p1;
+                    p1++;
+                }
+                else {
+                    p2--;
+                }
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int threeSumSmaller(int[] nums, int target) {
+        int n = nums.length, result = 0;
+        Arrays.sort(nums);
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int p1 = i + 1, p2 = n - 1;
+            while (p1 < p2) {
+                if (num + nums[p1] + nums[p2] < target) {
+                    result += p2 - p1;
+                    p1++;
+                }
+                else {
+                    p2--;
+                }
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2)$。排序需要$O(n\text{log}(n))$。双指针需要$O(n)$并且被调用了`n`次。总的时间复杂度为$O(n^2)$。
+- **空间复杂度：** $O(1)$。我们仅需要常数级时间。

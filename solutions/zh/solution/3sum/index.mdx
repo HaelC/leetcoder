@@ -1,0 +1,454 @@
+---
+number: 15
+title: 三数之和
+link: https://leetcode-cn.com/problems/3sum/
+difficulties: [中等]
+tags: [数组，排序, 哈希表, 双指针]
+related_problems:
+  [
+    [两数之和, two-sum],
+    [两数之和 II - 输入有序数组, two-sum-ii-input-array-is-sorted],
+    [最接近的三数之和, 3sum-closest],
+    [较小的三数之和, 3sum-smaller],
+  ]
+---
+
+import { Link } from "gatsby";
+
+[三数之和](https://leetcode-cn.com/problems/3sum/)可以视为原[两数之和](https://leetcode-cn.com/problems/two-sum/)的后续问题。在两数之和问题中，我们想要找到两个数相加之和等于 0.在三数之和中，我们可以用一个 for 循环，来得到数组中每个目标值`target`，并试着在剩余数组中找到两数之和等于`-target`。我们可以将大部分<Link to="/zh/solution/two-sum">两数之和的解法</Link>应用于该问题。
+
+<pre class="pseudo-code">
+  {`for i = 0 to n - 1:
+    target = nums[i]
+    apply two_sum in nums[(i + 1) .. (n - 1)] to find sum == -target
+`}
+</pre>
+
+<h3 id="solution_1">解法一：哈希表</h3>
+
+类似于<Link to="/zh/solution/two-sum#solution_2">两数之和的解法二</Link>，在`twoSum`函数中我们可以用一个哈希集来存储见过的值。
+
+问题要求答案中不可以包含重复的三元组，我们也可以用一个哈希集`triplets`来存储结果。在将符合条件的三元组`triplet`添加到`triplets`之前，我们还需要将`triplet`进行排序。
+
+排序以及插入哈希集需消耗时间。在处理重复数字时，我们还可以采用一些优化来使代码更加高效：
+
+- 使用一个哈希集`targets`来记录所有见过的`target`值
+- 在解决 two-sum 问题时，使用一个哈希集`used`来记录所有使用过的值
+
+注意我们虽然有优化，但是 C++的代码可能仍然会超时，因为 C++中我们使用`set`而非`unordered_set`来存储`vector`。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+private:
+    void twoSum(vector<int>& nums, int target, int start, set<vector<int>>& triplets) {
+        int n = nums.size();
+        unordered_set<int> visited;
+        unordered_set<int> used;
+        for (int i = start; i < n; i++) {
+            int num = nums[i];
+            if (visited.count(-target - num) > 0 && used.count(num) == 0) {
+                vector<int> triplet{target, -target - num, num};
+                sort(triplet.begin(), triplet.end());
+                triplets.insert(triplet);
+                visited.insert(num);
+                used.insert(num);
+            }
+            else {
+                visited.insert(num);
+            }
+        }
+    }
+
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        set<vector<int>> triplets;
+        unordered_set<int> targets;
+
+        for (int i = 0; i < n; i++) {
+            int target = nums[i];
+            if (targets.count(target) == 0) {
+                twoSum(nums, target, i + 1, triplets);
+                targets.insert(target);
+            }
+        }
+
+        return vector<vector<int>>(triplets.begin(), triplets.end());
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    private void twoSum(int[] nums, int target, int start, Set<List<Integer>> triplets) {
+        int n = nums.length;
+        Set<Integer> visited = new HashSet<>();
+        Set<Integer> used = new HashSet<>();
+        for (int i = start; i < n; i++) {
+            int num = nums[i];
+            if (visited.contains(-target - num) && !used.contains(num)) {
+                List<Integer> triplet = Arrays.asList(target, -target - num, num);
+                Collections.sort(triplet);
+                triplets.add(triplet);
+                visited.add(num);
+                used.add(num);
+            }
+            else {
+                visited.add(num);
+            }
+        }
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        Set<List<Integer>> triplets = new HashSet<>();
+        Set<Integer> targets = new HashSet<>();
+
+        for (int i = 0; i < n; i++) {
+            int target = nums[i];
+            if (!targets.contains(target)) {
+                twoSum(nums, target, i + 1, triplets);
+                targets.add(target);
+            }
+        }
+
+        List<List<Integer>> result = new ArrayList<>(triplets);
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2)$。twoSum 函数的时间复杂度为$O(n)$，我们共调用 twoSum 函数`n`次。
+- **空间复杂度：** $O(n^2)$。`targets`，`visited`和`used`需要$O(n)$的空间，而`triplets`可能需要$O(n^2)$的空间。
+
+<h3 id="solution_2">解法二：排序与哈希表</h3>
+
+为了处理重复数字，我们可以将输入数组先进行排序。在排序过后，在数组中所有重复数字都相邻，我们不需要额外的哈希集来处理重复数字，不过在 twoSum 函数中我们可能仍然需要一个哈希集`visited`。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+private:
+    unordered_set<int> visited;
+
+    void twoSum(vector<int>& nums, int target, int start, vector<vector<int>>& result) {
+        int n = nums.size();
+
+        for (int i = start; i < n; i++) {
+            int num = nums[i];
+            if (visited.count(-target - num) > 0) {
+                result.push_back({target, -target - num, num});
+                while (i + 1 < n && nums[i + 1] == num) {
+                    i++;
+                }
+            }
+            else {
+                visited.insert(num);
+            }
+        }
+
+        visited.clear();
+    }
+
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> result;
+
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                int target = nums[i];
+                twoSum(nums, target, i + 1, result);
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    private void twoSum(int[] nums, int target, int start, List<List<Integer>> result) {
+        int n = nums.length;
+        Set<Integer> visited = new HashSet<>();
+
+        for (int i = start; i < n; i++) {
+            int num = nums[i];
+            if (visited.contains(-target - num)) {
+                result.add(Arrays.asList(target, -target - num, num));
+                while (i + 1 < n && nums[i + 1] == num) {
+                    i++;
+                }
+            }
+            else {
+                visited.add(num);
+            }
+        }
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                int target = nums[i];
+                twoSum(nums, target, i + 1, result);
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2)$。排序耗时$O(n\text{log}(n))$。twoSum 函数耗时$O(n)$，被调用了`n`次。总的时间复杂度为$O(n^2)$。
+- **空间复杂度：** $O(n)$。在 twoSum 函数中，哈希集`visited`需要$O(n)$的空间。
+
+<h3 id="solution_3">解法三：排序与双指针</h3>
+
+排序之后，我们也可以用双指针的解法，其不需要额外的空间并且更高效。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+private:
+    void twoSum(vector<int>& nums, int target, int start, vector<vector<int>>& result) {
+        int p1 = start, p2 = nums.size() - 1;
+        while (p1 < p2) {
+            int num1 = nums[p1], num2 = nums[p2];
+            if (num1 + num2 == -target) {
+                result.push_back({target, num1, num2});
+                if (num1 == num2) {
+                    return;
+                }
+                while (nums[p1] == num1) {
+                    p1++;
+                }
+                while (nums[p2] == num2) {
+                    p2--;
+                }
+            }
+            else if (num1 + num2 < -target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+    }
+
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> result;
+
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                int target = nums[i];
+                twoSum(nums, target, i + 1, result);
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    private void twoSum(int[] nums, int target, int start, List<List<Integer>> result) {
+        int p1 = start, p2 = nums.length - 1;
+        while (p1 < p2) {
+            int num1 = nums[p1], num2 = nums[p2];
+            if (num1 + num2 == -target) {
+                result.add(Arrays.asList(target, num1, num2));
+                if (num1 == num2) {
+                    return;
+                }
+
+                while (nums[p1] == num1) {
+                    p1++;
+                }
+
+                while (nums[p2] == num2) {
+                    p2--;
+                }
+            }
+            else if (num1 + num2 < -target) {
+                p1++;
+            }
+            else {
+                p2--;
+            }
+        }
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                int num = nums[i];
+                twoSum(nums, num, i + 1, result);
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n^2)$。与解法二一样，我们调用 twoSum 函数`n`次。
+- **空间复杂度：** $O(1)$。我们仅需常数级空间。
+
+<h3 id="solution_4">解法四：用Map计数</h3>
+
+我们也可以用一个 Map `numCount`来统计每个数字的出现次数。数据结构我们选择用 map（Java 中的 TreeMap）而不是 hashmap，从而我们在遍历 map 时，我们可以得到有序排列的键。算法如下：
+
+<pre class="pseudo-code">
+  {`result = array()
+numCount = map()
+for num in nums:
+    numCount[num]++
+
+for num1 in numCount.keys():
+    numCount[num1]--
+    for num2 in numCount.remainingKeys():
+        numCount[num2]--
+        if (-num1 - num2 >= num2) AND numCount[-num1 - num2] > 0:
+            result.add(num1, num2, -num1 - num2)
+        numCount[num2]++
+    numCount[num1]++
+`}
+</pre>
+
+因为我们用的是 map，我们可以保证`num2 >= num1`，我们只需要检查是否`-num1 - num2 >= num2`，以及 map 中是否包含`-num1 - num2`。
+
+C++的代码与 Java 的代码不同。在 C++中我们可以直接操作迭代器。在 Java 中，我们需要将`keySet()`转化为一个数组，随后用两个下标`i`和`j`来进行迭代。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        map<int, int> numCount;
+        vector<vector<int>> result;
+
+        for (int num : nums) {
+            numCount[num]++;
+        }
+
+
+        for (auto it = numCount.begin(); it != numCount.end(); it++) {
+            int num1 = (*it).first;
+            (*it).second = (*it).second - 1;
+            for (auto it2 = it; it2 != numCount.end(); it2++) {
+                if ((*it2).second > 0) {
+                    int num2 = (*it2).first;
+                    if (num2 > -num1 - num2) {
+                        break;
+                    }
+                    (*it2).second = (*it2).second - 1;
+                    if (numCount.count(-num1 - num2) > 0 && numCount[-num1 - num2] > 0) {
+                        result.push_back({num1, num2, -num1 - num2});
+                    }
+                    (*it2).second = (*it2).second + 1;
+                }
+            }
+            (*it).second = (*it).second + 1;
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Map<Integer, Integer> numCount = new TreeMap();
+        for (int num : nums) {
+            numCount.put(num, numCount.getOrDefault(num, 0) + 1);
+        }
+
+        List<Integer> sortedNums = new ArrayList<>(numCount.keySet());
+
+        for (int i = 0; i < sortedNums.size(); i++) {
+            int num1 = sortedNums.get(i);
+            numCount.put(num1, numCount.get(num1) - 1);
+            for (int j = i; j < sortedNums.size(); j++) {
+                int num2 = sortedNums.get(j);
+                if (num2 > -num1 - num2) {
+                    break;
+                }
+                if (numCount.get(num2) > 0) {
+                    numCount.put(num2, numCount.get(num2) - 1);
+                    if (numCount.getOrDefault(-num1 - num2, 0) > 0) {
+                        result.add(Arrays.asList(num1, num2, -num1 - num2));
+                    }
+                    numCount.put(num2, numCount.get(num2) + 1);
+                }
+            }
+            numCount.put(num1, numCount.get(num1) + 1);
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：**C++为$O(n^2)$，Java 为$O(n^2\text{log}^2n)$。TreeMap 的插入与查找的时间复杂度为$O(\text{log}N)$。创建`numCount`需要$O(n\text{log}(n))$。在 C++的嵌套迭代中，对迭代器的操作是常数级的。而在 Java 中，在嵌套的 for 循环中含有对 TreeMap 的插入与查找，使得总体的时间复杂度为$O(n^2\text{log}^2n)$。
+- **空间复杂度：** $O(n)$。我们建立了一个大小为`n`的 map。
