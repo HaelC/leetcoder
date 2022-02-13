@@ -1,0 +1,171 @@
+---
+number: 259
+title: 3Sum Smaller
+link: https://leetcode.com/problems/3sum-smaller/
+difficulties: [medium]
+tags: [Array, Sorting, Binary Search, Two Pointers]
+related_problems: [[3Sum, 3sum], [3Sum Closest, 3sum-closest]]
+---
+
+For 3Sum family problems (like [3Sum](https://leetcode.com/problems/3sum/), [3Sum Closest](https://leetcode.com/problems/3sum-closest/) and this [3Sum Smaller](https://leetcode.com/problems/3sum-smaller/)), sorting is often a good preprocessing.
+
+<h3 id="solution_1">Solution 1: Sorting and Binary Search</h3>
+
+We can sort the input array, and then have a nested for loop with indices `i` and `j`. If we find an index `k` such that `nums[i] + nums[j] + nums[k] < target`, then we know that there are `k - j` triplets (from `nums[i], nums[j], nums[j + 1]` to `nums[i], nums[j], nums[k]`) whose sums are smaller than `target`. We can use binary search to find the maximum index `k`.
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    int threeSumSmaller(vector<int>& nums, int target) {
+        int n = nums.size(), result = 0;
+        sort(nums.begin(), nums.end());
+
+        for (int i = 0; i < n - 2; i++) {
+            int num1 = nums[i];
+            for (int j = i + 1; j < n - 1; j++) {
+                int num2 = nums[j];
+                if (num1 + num2 + nums[j + 1] >= target) {
+                    break;
+                }
+
+                int left = j + 1, right = n - 1;
+                while (left < right) {
+                    int mid = (left + right + 1) / 2;
+                    if (num1 + num2 + nums[mid] < target) {
+                        left = mid;
+                    }
+                    else {
+                        right = mid - 1;
+                    }
+                }
+                result += left - j;
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int threeSumSmaller(int[] nums, int target) {
+        int n = nums.length, result = 0;
+        Arrays.sort(nums);
+
+        for (int i = 0; i < n; i++) {
+            int num1 = nums[i];
+            for (int j = i + 1; j < n - 1; j++) {
+                int num2 = nums[j];
+                if (num1 + num2 + nums[j + 1] >= target) {
+                    break;
+                }
+
+                int left = j + 1, right = n - 1;
+                while (left < right) {
+                    int mid = (left + right + 1) / 2;
+                    if (num1 + num2 + nums[mid] < target) {
+                        left = mid;
+                    }
+                    else {
+                        right = mid - 1;
+                    }
+                }
+                result += left - j;
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n^2\text{log}(n))$. Sorting takes $O(n\text{log}(n))$. The nested for loop takes $O(n^2)$ and the inner binary seach takes $O(\text{log}(n))$. The overall time complexity is $O(n^2\text{log}(n))$.
+- **Space complexity:** $O(1)$. We only need constant space.
+
+<h3 id="solution_2">Solution 2: Soring and Two Pointers</h3>
+
+After sorting, we can also use two pointers to solve the problem.
+
+We can use a for loop with index `i` to iterate through the array. In the remaining array, we set two pointers to `p1 = i + 1` and `p2 = n - 1`.
+
+- If `nums[i] + nums[p1] + nums[p2] < target`, then we know that there are `p2 - p1` triplets (from `nums[i], nums[p1], nums[p1 + 1]` to `nums[i], nums[p1], nums[p2]`) whose sums are smaller than `target`. We add `p2 - p1` to result and move `p1` to the right (`p1++`).
+- If `nums[i] + nums[p1] + nums[p2] >= target`, it means `nums[p2`] is a bit large, and we move `p2` to the left (`p2--`).
+
+<details class="code-details">
+    <summary>C++ Solution</summary>
+
+```cpp
+class Solution {
+public:
+    int threeSumSmaller(vector<int>& nums, int target) {
+        int n = nums.size(), result = 0;
+        sort(nums.begin(), nums.end());
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int p1 = i + 1, p2 = n - 1;
+            while (p1 < p2) {
+                if (num + nums[p1] + nums[p2] < target) {
+                    result += p2 - p1;
+                    p1++;
+                }
+                else {
+                    p2--;
+                }
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java Solution</summary>
+
+```java
+class Solution {
+    public int threeSumSmaller(int[] nums, int target) {
+        int n = nums.length, result = 0;
+        Arrays.sort(nums);
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int p1 = i + 1, p2 = n - 1;
+            while (p1 < p2) {
+                if (num + nums[p1] + nums[p2] < target) {
+                    result += p2 - p1;
+                    p1++;
+                }
+                else {
+                    p2--;
+                }
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**Analysis:**
+
+- **Time complexity:** $O(n^2)$. Sorting takes $O(n\text{log}(n))$. Two pointers takes $O(n)$ and it's called `n` times. The overall time complexity is $O(n^2)$.
+- **Space complexity:** $O(1)$. We only need constant space.
