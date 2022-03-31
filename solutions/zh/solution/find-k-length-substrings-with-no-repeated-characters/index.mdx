@@ -1,0 +1,102 @@
+---
+number: 1100
+title: 长度为 K 的无重复字符子串
+link: https://leetcode-cn.com/problems/find-k-length-substrings-with-no-repeated-characters/
+difficulties: [中等]
+tags: [字符串, 滑动窗口, 哈希表]
+related_problems:
+  [[无重复字符的最长子串, longest-substring-without-repeating-characters]]
+---
+
+import { Link } from "gatsby";
+
+该问题与<Link to="/zh/solution/longest-substring-without-repeating-characters">无重复字符的最长子串的解法</Link>思路类似。
+
+<h3 id="solution_1">解法一：滑动窗口与哈希表</h3>
+
+我们可以用一个滑动窗口来追踪当前的无重复字符子串。滑动窗口的左端由一个变量`start`存储，右端则与遍历字符串时的下标`i`同步。
+
+在用带下标`i`的 for 循环遍历字符串时，滑动窗口将其右端更新为`i`，我们将一个新字符`c = s[i]`加到当前的子串中。我们需要检查前一子串`s[start..(i-1)]`是否包含字符`c`。如果不包含，我们不需要更新滑动窗口的左端。否则，我们需要更新滑动窗口的左端，使得滑动窗口不包含重复字符。
+
+我们可以用一个哈希表来存储字符以及它的最新下标。如果哈希表不包含`c`，或者`c`的下标比`start`小（`hashmap[c] < start`），那么就意味着前一子串`s[start..(i-1)]`不包含字符`c`。否则我们需要将`start`移动至`hashmap[c] + 1`的位置来移除原先子串中的`c`。
+
+更新当前子串后，我们也要更新哈希表中`hashmap[c]`的值，并计算当前子串的长度。如果子串长度大于等于`k`，我们便找到了一个长度为`k`的无重复字符子串（`s[(i-k)..i]`），可以将结果`result`加一。
+
+<details class="code-details">
+    <summary>C++解法</summary>
+
+```cpp
+class Solution {
+public:
+    int numKLenSubstrNoRepeats(string s, int k) {
+        int n = s.length(), result = 0;
+        if (n < k) {
+            return 0;
+        }
+
+        int len = 0, start = 0;
+        unordered_map<char, int> hashmap;
+
+        for (int i = 0; i < n; i++) {
+            char c = s[i];
+            if (hashmap.count(c) == 0 || hashmap[c] < start) {
+                len++;
+            }
+            else {
+                len = i - hashmap[c];
+                start = hashmap[c] + 1;
+            }
+            hashmap[c] = i;
+
+            if (len >= k) {
+                result++;
+            }
+        }
+
+        return result;
+    }
+};
+```
+
+</details>
+
+<details class="code-details">
+    <summary>Java解法</summary>
+
+```java
+class Solution {
+    public int numKLenSubstrNoRepeats(String s, int k) {
+        int n = s.length(), result = 0;
+        if (n < k) {
+            return 0;
+        }
+
+        Map<Character, Integer> hashmap = new HashMap<>();
+        int len = 0, start = 0;
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (!hashmap.containsKey(c) || hashmap.get(c) < start) {
+                len++;
+            }
+            else {
+                len = i - hashmap.get(c);
+                start = hashmap.get(c) + 1;
+            }
+            hashmap.put(c, i);
+
+            if (len >= k) {
+                result++;
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+</details>
+
+**分析：**
+
+- **时间复杂度：** $O(n)$。我们用一个 for 循环遍历输入字符串。
+- **空间复杂度：** $O(\text{min}(m,n))$，其中`m`是字符集的大小，`n`是字符串的大小。不过我们可以将其视为$O(1)$，因为`m`的大小固定。

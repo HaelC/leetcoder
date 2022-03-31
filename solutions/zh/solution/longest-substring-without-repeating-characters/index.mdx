@@ -4,7 +4,13 @@ title: 无重复字符的最长子串
 link: https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
 difficulties: [中等]
 tags: [字符串, 滑动窗口, 哈希表]
-related_problems: []
+related_problems:
+  [
+    [
+      长度为 K 的无重复字符子串,
+      find-k-length-substrings-with-no-repeated-characters,
+    ],
+  ]
 ---
 
 <h3 id="solution_1">解法一：滑动窗口</h3>
@@ -136,7 +142,7 @@ class Solution {
 **分析：**
 
 - **时间复杂度：** $O(n)$。我们遍历了大小为`n`的字符串.
-- **空间复杂度：** $O(\text{min}(m,n))$。其中`m`是字符集的大小，`n`是字符串的大小。
+- **空间复杂度：** $O(\text{min}(m,n))$。其中`m`是字符集的大小，`n`是字符串的大小。不过我们可以将其视为$O(1)$，因为`m`的大小固定。
 
 <div id="follow-up">
   <h3>后续问题</h3>
